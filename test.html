@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solveria API Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8 text-center">Solveria API Test Page</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Health Check -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">Health Check</h2>
+                <button onclick="testHealth()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Test Health
+                </button>
+                <div id="health-result" class="mt-4 p-3 bg-gray-50 rounded hidden"></div>
+            </div>
+
+            <!-- OCR Test -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">OCR Test</h2>
+                <input type="file" id="ocr-file" accept="image/*" class="mb-4">
+                <button onclick="testOCR()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                    Test OCR
+                </button>
+                <div id="ocr-result" class="mt-4 p-3 bg-gray-50 rounded hidden"></div>
+            </div>
+
+            <!-- AI Solver Test -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">AI Solver Test</h2>
+                <textarea id="math-problem" placeholder="Enter math problem..." class="w-full p-2 border rounded mb-4" rows="3">2 + 2 = ?</textarea>
+                <div class="mb-4">
+                    <select id="grade" class="border rounded p-2 mr-4">
+                        <option value="8">8th Grade</option>
+                        <option value="9">9th Grade</option>
+                        <option value="10">10th Grade</option>
+                    </select>
+                    <select id="language" class="border rounded p-2">
+                        <option value="tr">Turkish</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                <button onclick="testSolver()" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+                    Test Solver
+                </button>
+                <div id="solver-result" class="mt-4 p-3 bg-gray-50 rounded hidden"></div>
+            </div>
+
+            <!-- Signup Test -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">Signup Test</h2>
+                <input type="text" id="test-name" placeholder="Full Name" class="w-full p-2 border rounded mb-2">
+                <input type="email" id="test-email" placeholder="Email" class="w-full p-2 border rounded mb-2">
+                <input type="password" id="test-password" placeholder="Password" class="w-full p-2 border rounded mb-4">
+                <button onclick="testSignup()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                    Test Signup
+                </button>
+                <div id="signup-result" class="mt-4 p-3 bg-gray-50 rounded hidden"></div>
+            </div>
+        </div>
+
+        <!-- Links to Main Pages -->
+        <div class="mt-8 text-center">
+            <h2 class="text-2xl font-semibold mb-4">Navigation</h2>
+            <div class="space-x-4">
+                <a href="/" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Landing Page</a>
+                <a href="/solve" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Math Solver</a>
+                <a href="/signup" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Signup</a>
+                <a href="/editor" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">Text Editor</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function testHealth() {
+            const result = document.getElementById('health-result');
+            result.classList.remove('hidden');
+            result.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                result.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                result.className = 'mt-4 p-3 bg-green-50 rounded border border-green-200';
+            } catch (error) {
+                result.innerHTML = `Error: ${error.message}`;
+                result.className = 'mt-4 p-3 bg-red-50 rounded border border-red-200';
+            }
+        }
+
+        async function testOCR() {
+            const fileInput = document.getElementById('ocr-file');
+            const result = document.getElementById('ocr-result');
+            
+            if (!fileInput.files[0]) {
+                alert('Please select an image file');
+                return;
+            }
+            
+            result.classList.remove('hidden');
+            result.innerHTML = 'Processing OCR...';
+            
+            try {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                
+                const response = await fetch('/api/ocr', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                result.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                result.className = response.ok 
+                    ? 'mt-4 p-3 bg-green-50 rounded border border-green-200'
+                    : 'mt-4 p-3 bg-red-50 rounded border border-red-200';
+            } catch (error) {
+                result.innerHTML = `Error: ${error.message}`;
+                result.className = 'mt-4 p-3 bg-red-50 rounded border border-red-200';
+            }
+        }
+
+        async function testSolver() {
+            const problem = document.getElementById('math-problem').value;
+            const grade = document.getElementById('grade').value;
+            const language = document.getElementById('language').value;
+            const result = document.getElementById('solver-result');
+            
+            if (!problem.trim()) {
+                alert('Please enter a math problem');
+                return;
+            }
+            
+            result.classList.remove('hidden');
+            result.innerHTML = 'Solving...';
+            
+            try {
+                const response = await fetch('/api/solve', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: problem,
+                        grade: parseInt(grade),
+                        language: language
+                    })
+                });
+                
+                const data = await response.json();
+                result.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                result.className = response.ok 
+                    ? 'mt-4 p-3 bg-green-50 rounded border border-green-200'
+                    : 'mt-4 p-3 bg-red-50 rounded border border-red-200';
+            } catch (error) {
+                result.innerHTML = `Error: ${error.message}`;
+                result.className = 'mt-4 p-3 bg-red-50 rounded border border-red-200';
+            }
+        }
+
+        async function testSignup() {
+            const name = document.getElementById('test-name').value;
+            const email = document.getElementById('test-email').value;
+            const password = document.getElementById('test-password').value;
+            const result = document.getElementById('signup-result');
+            
+            if (!email || !password) {
+                alert('Please enter email and password');
+                return;
+            }
+            
+            result.classList.remove('hidden');
+            result.innerHTML = 'Creating account...';
+            
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                result.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                result.className = response.ok 
+                    ? 'mt-4 p-3 bg-green-50 rounded border border-green-200'
+                    : 'mt-4 p-3 bg-red-50 rounded border border-red-200';
+            } catch (error) {
+                result.innerHTML = `Error: ${error.message}`;
+                result.className = 'mt-4 p-3 bg-red-50 rounded border border-red-200';
+            }
+        }
+    </script>
+</body>
+</html>

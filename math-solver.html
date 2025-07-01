@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solveria - Math Solver</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3A86FF',
+                        secondary: '#00B894',
+                        accent: '#FFE66D',
+                        background: '#F9FAFB',
+                        'text-dark': '#2D3436',
+                        'text-muted': '#6B7280'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(58, 134, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 184, 148, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 60% 40%, rgba(255, 230, 109, 0.03) 0%, transparent 50%),
+                linear-gradient(135deg, #F9FAFB 0%, #EBF4FF 25%, #E8F8F5 50%, #F3F7FF 75%, #F9FAFB 100%);
+            min-height: 100vh;
+        }
+        
+        .gradient-bg { 
+            background: linear-gradient(135deg, #3A86FF 0%, #00B894 100%); 
+        }
+
+        .step-active { 
+            @apply bg-primary text-white; 
+        }
+        
+        .step-completed { 
+            @apply bg-secondary text-white; 
+        }
+        
+        .step-inactive { 
+            @apply bg-gray-200 text-gray-500; 
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loading-dots::after {
+            content: '';
+            animation: loading 2s infinite;
+        }
+
+        @keyframes loading {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body class="bg-background text-text-dark font-inter min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center">
+                    <i data-lucide="calculator" class="w-7 h-7 text-white"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-text-dark">Solveria Math Solver</h1>
+            </div>
+            <p class="text-text-muted text-lg">Matematik problemini yükle, düzenle ve AI ile çöz</p>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="mb-8">
+            <div class="flex items-center justify-center space-x-4 mb-4">
+                <div class="flex items-center">
+                    <div id="step1-indicator" class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold step-active">
+                        1
+                    </div>
+                    <span class="ml-2 text-sm font-medium text-text-dark">Yükle</span>
+                </div>
+                <div class="w-16 h-1 bg-gray-200 rounded">
+                    <div id="progress1" class="h-full bg-primary rounded transition-all duration-500 w-0"></div>
+                </div>
+                <div class="flex items-center">
+                    <div id="step2-indicator" class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold step-inactive">
+                        2
+                    </div>
+                    <span class="ml-2 text-sm font-medium text-gray-500">Düzenle</span>
+                </div>
+                <div class="w-16 h-1 bg-gray-200 rounded">
+                    <div id="progress2" class="h-full bg-primary rounded transition-all duration-500 w-0"></div>
+                </div>
+                <div class="flex items-center">
+                    <div id="step3-indicator" class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold step-inactive">
+                        3
+                    </div>
+                    <span class="ml-2 text-sm font-medium text-gray-500">Çöz</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 1: Image Upload -->
+        <div id="upload-section" class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-6">
+            <div class="text-center">
+                <h2 class="text-2xl font-semibold text-text-dark mb-4">1. Matematik Problemini Yükle</h2>
+                <p class="text-text-muted mb-6">Fotoğraf çekin veya dosya seçin</p>
+
+                <!-- Upload Area -->
+                <div id="upload-area" class="border-2 border-dashed border-gray-300 rounded-xl p-8 hover:border-primary transition-colors cursor-pointer">
+                    <input type="file" id="image-input" accept="image/*" class="hidden">
+                    <div class="text-center">
+                        <i data-lucide="upload" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+                        <p class="text-lg font-medium text-text-dark mb-2">Dosya yükle veya sürükle bırak</p>
+                        <p class="text-text-muted mb-4">PNG, JPG, WebP formatları desteklenir (Maks. 10MB)</p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <button id="file-select-btn" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center">
+                                <i data-lucide="folder" class="w-5 h-5 mr-2"></i>
+                                Dosya Seç
+                            </button>
+                            <button id="camera-btn" class="bg-secondary text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center">
+                                <i data-lucide="camera" class="w-5 h-5 mr-2"></i>
+                                Kamera Aç
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Preview -->
+                <div id="image-preview" class="hidden mt-6">
+                    <div class="relative inline-block">
+                        <img id="preview-img" src="" alt="Preview" class="max-w-full max-h-64 rounded-lg shadow-md">
+                        <button id="remove-image" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- OCR Processing -->
+                <div id="ocr-loading" class="hidden mt-6">
+                    <div class="flex items-center justify-center space-x-3">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                        <span class="text-text-dark font-medium loading-dots">Metin çıkarılıyor</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Text Editing -->
+        <div id="edit-section" class="hidden bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-6 fade-in">
+            <h2 class="text-2xl font-semibold text-text-dark mb-4">2. Metni Kontrol Et ve Düzenle</h2>
+            
+            <!-- OCR Results -->
+            <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-blue-600"></i>
+                        <span class="text-blue-800 font-medium">OCR Tamamlandı</span>
+                    </div>
+                    <span id="ocr-confidence" class="text-sm text-blue-600">Güven: --</span>
+                </div>
+            </div>
+
+            <!-- Text Editor -->
+            <div class="space-y-4">
+                <label for="extracted-text" class="block text-sm font-medium text-text-dark">
+                    Çıkarılan Metin
+                </label>
+                <textarea 
+                    id="extracted-text" 
+                    rows="6"
+                    placeholder="OCR ile çıkarılan metin burada görünecek..."
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl text-text-dark placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 hover:border-gray-400 resize-none font-mono text-lg"
+                ></textarea>
+
+                <!-- Grade Selection -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="grade-select" class="block text-sm font-medium text-text-dark mb-2">
+                            Sınıf Seviyesi
+                        </label>
+                        <select id="grade-select" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                            <option value="5">5. Sınıf</option>
+                            <option value="6">6. Sınıf</option>
+                            <option value="7">7. Sınıf</option>
+                            <option value="8" selected>8. Sınıf</option>
+                            <option value="9">9. Sınıf</option>
+                            <option value="10">10. Sınıf</option>
+                            <option value="11">11. Sınıf</option>
+                            <option value="12">12. Sınıf</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="language-select" class="block text-sm font-medium text-text-dark mb-2">
+                            Çözüm Dili
+                        </label>
+                        <select id="language-select" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                            <option value="tr">Türkçe</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                    <button id="solve-btn" class="flex-1 gradient-bg text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center">
+                        <i data-lucide="brain" class="w-5 h-5 mr-2"></i>
+                        AI ile Çöz
+                    </button>
+                    <button id="back-to-upload" class="flex-1 bg-gray-100 text-text-dark px-6 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors flex items-center justify-center">
+                        <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i>
+                        Geri Dön
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: AI Solution -->
+        <div id="solution-section" class="hidden bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-6 fade-in">
+            <h2 class="text-2xl font-semibold text-text-dark mb-4">3. AI Çözümü</h2>
+
+            <!-- Loading State -->
+            <div id="ai-loading" class="text-center py-8">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                <p class="text-text-dark font-medium loading-dots">AI çözüm hazırlıyor</p>
+                <p class="text-text-muted mt-2">Bu işlem 10-30 saniye sürebilir</p>
+            </div>
+
+            <!-- Solution Display -->
+            <div id="solution-content" class="hidden">
+                <!-- Original Problem -->
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                    <h3 class="font-semibold text-text-dark mb-2 flex items-center">
+                        <i data-lucide="file-text" class="w-5 h-5 mr-2"></i>
+                        Problem
+                    </h3>
+                    <p id="original-problem" class="text-text-dark font-mono"></p>
+                </div>
+
+                <!-- AI Solution -->
+                <div class="mb-6">
+                    <h3 class="font-semibold text-text-dark mb-4 flex items-center">
+                        <i data-lucide="brain" class="w-5 h-5 mr-2"></i>
+                        AI Çözümü
+                    </h3>
+                    <div id="ai-solution" class="prose max-w-none text-text-dark whitespace-pre-wrap bg-gradient-to-r from-blue-50 to-green-50 p-6 rounded-lg border border-blue-200">
+                    </div>
+                </div>
+
+                <!-- Solution Metadata -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-gray-50 p-4 rounded-lg text-center">
+                        <i data-lucide="graduation-cap" class="w-6 h-6 text-primary mx-auto mb-2"></i>
+                        <p class="text-sm text-text-muted">Sınıf Seviyesi</p>
+                        <p id="solution-grade" class="font-semibold text-text-dark">8. Sınıf</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center">
+                        <i data-lucide="globe" class="w-6 h-6 text-primary mx-auto mb-2"></i>
+                        <p class="text-sm text-text-muted">Dil</p>
+                        <p id="solution-language" class="font-semibold text-text-dark">Türkçe</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg text-center">
+                        <i data-lucide="zap" class="w-6 h-6 text-primary mx-auto mb-2"></i>
+                        <p class="text-sm text-text-muted">Model</p>
+                        <p id="solution-model" class="font-semibold text-text-dark">GPT-4</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button id="new-problem" class="flex-1 gradient-bg text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-all flex items-center justify-center">
+                        <i data-lucide="plus" class="w-5 h-5 mr-2"></i>
+                        Yeni Problem
+                    </button>
+                    <button id="copy-solution" class="flex-1 bg-secondary text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-600 transition-colors flex items-center justify-center">
+                        <i data-lucide="copy" class="w-5 h-5 mr-2"></i>
+                        Çözümü Kopyala
+                    </button>
+                    <button id="share-solution" class="flex-1 bg-gray-100 text-text-dark px-6 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors flex items-center justify-center">
+                        <i data-lucide="share-2" class="w-5 h-5 mr-2"></i>
+                        Paylaş
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Messages -->
+        <div id="error-message" class="hidden bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div class="flex items-center">
+                <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 mr-3"></i>
+                <div>
+                    <h3 class="text-sm font-medium text-red-800">Hata</h3>
+                    <p id="error-text" class="text-sm text-red-700 mt-1"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8">
+            <a href="solveria-landing.html" class="text-primary hover:text-blue-600 font-medium transition-colors flex items-center justify-center">
+                <i data-lucide="home" class="w-4 h-4 mr-2"></i>
+                Ana sayfaya dön
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // State management
+        let currentStep = 1;
+        let uploadedImage = null;
+        let extractedText = '';
+        let solutionData = null;
+
+        // DOM elements
+        const uploadSection = document.getElementById('upload-section');
+        const editSection = document.getElementById('edit-section');
+        const solutionSection = document.getElementById('solution-section');
+        const imageInput = document.getElementById('image-input');
+        const fileSelectBtn = document.getElementById('file-select-btn');
+        const cameraBtn = document.getElementById('camera-btn');
+        const uploadArea = document.getElementById('upload-area');
+        const imagePreview = document.getElementById('image-preview');
+        const previewImg = document.getElementById('preview-img');
+        const removeImageBtn = document.getElementById('remove-image');
+        const ocrLoading = document.getElementById('ocr-loading');
+        const extractedTextArea = document.getElementById('extracted-text');
+        const gradeSelect = document.getElementById('grade-select');
+        const languageSelect = document.getElementById('language-select');
+        const solveBtn = document.getElementById('solve-btn');
+        const backToUploadBtn = document.getElementById('back-to-upload');
+        const aiLoading = document.getElementById('ai-loading');
+        const solutionContent = document.getElementById('solution-content');
+        const errorMessage = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        const ocrConfidence = document.getElementById('ocr-confidence');
+
+        // Event Listeners
+        fileSelectBtn.addEventListener('click', () => imageInput.click());
+        cameraBtn.addEventListener('click', openCamera);
+        imageInput.addEventListener('change', handleImageSelect);
+        removeImageBtn.addEventListener('click', removeImage);
+        uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('drop', handleDrop);
+        solveBtn.addEventListener('click', solveProblem);
+        backToUploadBtn.addEventListener('click', () => showStep(1));
+        document.getElementById('new-problem').addEventListener('click', () => {
+            resetWorkflow();
+            showStep(1);
+        });
+        document.getElementById('copy-solution').addEventListener('click', copySolution);
+
+        // Utility Functions
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.remove('hidden');
+            setTimeout(() => errorMessage.classList.add('hidden'), 5000);
+        }
+
+        function updateProgress() {
+            const steps = ['step1-indicator', 'step2-indicator', 'step3-indicator'];
+            const progress = ['progress1', 'progress2'];
+            
+            steps.forEach((stepId, index) => {
+                const step = document.getElementById(stepId);
+                const stepNum = index + 1;
+                
+                if (stepNum < currentStep) {
+                    step.className = 'w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold step-completed';
+                } else if (stepNum === currentStep) {
+                    step.className = 'w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold step-active';
+                } else {
+                    step.className = 'w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold step-inactive';
+                }
+            });
+
+            progress.forEach((progressId, index) => {
+                const progressBar = document.getElementById(progressId);
+                if (index + 1 < currentStep) {
+                    progressBar.style.width = '100%';
+                } else {
+                    progressBar.style.width = '0%';
+                }
+            });
+        }
+
+        function showStep(step) {
+            currentStep = step;
+            updateProgress();
+            
+            // Hide all sections
+            uploadSection.classList.add('hidden');
+            editSection.classList.add('hidden');
+            solutionSection.classList.add('hidden');
+            
+            // Show current step
+            switch(step) {
+                case 1:
+                    uploadSection.classList.remove('hidden');
+                    break;
+                case 2:
+                    editSection.classList.remove('hidden');
+                    break;
+                case 3:
+                    solutionSection.classList.remove('hidden');
+                    break;
+            }
+        }
+
+        function resetWorkflow() {
+            uploadedImage = null;
+            extractedText = '';
+            solutionData = null;
+            imagePreview.classList.add('hidden');
+            previewImg.src = '';
+            extractedTextArea.value = '';
+            ocrLoading.classList.add('hidden');
+            aiLoading.classList.remove('hidden');
+            solutionContent.classList.add('hidden');
+        }
+
+        // Image handling
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                processImage(file);
+            }
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            uploadArea.classList.add('border-primary');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            uploadArea.classList.remove('border-primary');
+            
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                processImage(files[0]);
+            }
+        }
+
+        function processImage(file) {
+            // Validate file
+            if (!file.type.startsWith('image/')) {
+                showError('Lütfen geçerli bir resim dosyası seçin.');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                showError('Dosya boyutu 10MB\'dan küçük olmalıdır.');
+                return;
+            }
+
+            uploadedImage = file;
+            
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImg.src = e.target.result;
+                imagePreview.classList.remove('hidden');
+                
+                // Start OCR processing
+                performOCR(file);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeImage() {
+            uploadedImage = null;
+            imagePreview.classList.add('hidden');
+            previewImg.src = '';
+            imageInput.value = '';
+            ocrLoading.classList.add('hidden');
+        }
+
+        function openCamera() {
+            // In a real implementation, you would open camera interface
+            // For now, just trigger file selection
+            imageInput.setAttribute('capture', 'camera');
+            imageInput.click();
+        }
+
+        // OCR Processing
+        async function performOCR(file) {
+            ocrLoading.classList.remove('hidden');
+            
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await fetch('/api/ocr', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    extractedText = result.data.extractedText;
+                    extractedTextArea.value = extractedText;
+                    ocrConfidence.textContent = `Güven: ${result.data.confidence}%`;
+                    
+                    ocrLoading.classList.add('hidden');
+                    showStep(2);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('OCR Error:', error);
+                ocrLoading.classList.add('hidden');
+                showError('Metin çıkarma işlemi başarısız oldu. Lütfen daha net bir resim deneyin.');
+            }
+        }
+
+        // AI Solution
+        async function solveProblem() {
+            const text = extractedTextArea.value.trim();
+            const grade = gradeSelect.value;
+            const language = languageSelect.value;
+
+            if (!text) {
+                showError('Lütfen çözülecek matematik problemini girin.');
+                return;
+            }
+
+            showStep(3);
+            aiLoading.classList.remove('hidden');
+            solutionContent.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/solve', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        language: language,
+                        grade: parseInt(grade)
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    solutionData = result.data;
+                    displaySolution(result.data);
+                    
+                    aiLoading.classList.add('hidden');
+                    solutionContent.classList.remove('hidden');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('AI Solve Error:', error);
+                aiLoading.classList.add('hidden');
+                showError('AI çözüm oluşturulamadı. Lütfen tekrar deneyin.');
+                showStep(2);
+            }
+        }
+
+        function displaySolution(data) {
+            document.getElementById('original-problem').textContent = data.originalProblem;
+            document.getElementById('ai-solution').textContent = data.solution;
+            document.getElementById('solution-grade').textContent = `${data.grade}. Sınıf`;
+            document.getElementById('solution-language').textContent = data.language === 'tr' ? 'Türkçe' : 'English';
+            document.getElementById('solution-model').textContent = data.model || 'GPT-4';
+        }
+
+        function copySolution() {
+            if (solutionData) {
+                const textToCopy = `Problem: ${solutionData.originalProblem}\n\nÇözüm:\n${solutionData.solution}`;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    // Show success feedback
+                    const copyBtn = document.getElementById('copy-solution');
+                    const originalText = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i data-lucide="check" class="w-5 h-5 mr-2"></i>Kopyalandı!';
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalText;
+                        lucide.createIcons();
+                    }, 2000);
+                });
+            }
+        }
+
+        // Initialize
+        showStep(1);
+    </script>
+</body>
+</html>
