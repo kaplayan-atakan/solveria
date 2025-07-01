@@ -1,7 +1,7 @@
 const express = require('express');
 const OpenAI = require('openai');
 const rateLimit = require('express-rate-limit');
-const { generateFinalPrompt } = require('./math-prompt-template');
+const { generateFinalPrompt } = require('../../shared/utils/math-prompt-template');
 
 const router = express.Router();
 

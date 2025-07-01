@@ -1,11 +1,10 @@
 {
   "name": "solveria-math-solver",
   "version": "1.0.0",
-  "description": "AI-powered math problem solver with OCR capabilities",
-  "main": "server.js",
+  "description": "AI-powered math problem solver with OCR capabilities",  "main": "src/backend/server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node src/backend/server.js",
+    "dev": "nodemon src/backend/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["math", "solver", "ai", "ocr", "education"],

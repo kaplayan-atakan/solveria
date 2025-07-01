@@ -12,64 +12,75 @@ All pricing data is defined at the top for easy updates.
 
 window.SolveriaPricing = {
     header: {
-        title: "Öğrenci Dostu Fiyatlarla",
-        subtitle: "Matematik başarınızı artırmak için tasarlanmış esnek paketler",
-        titleHighlight: "Matematik Başarısı"
+        title: "Eğitim Seviyene Özel",
+        subtitle: "Matematik hedeflerine ulaşmak için tasarlanmış esnek paketler",
+        titleHighlight: "Matematik Paketleri"
+    },
+    
+    // Billing toggle configuration
+    billingToggle: {
+        enabled: true,
+        monthlyLabel: "Aylık",
+        yearlyLabel: "Yıllık",
+        savingsText: "2 AY ÜCRETSİZ"
     },
     
     promoMessage: {
-        text: "Yıllık alımlarda %16 indirim – 2 ay bizden hediye!",
+        text: "Yıllık planla 2 ay bizden hediye – %17 tasarruf!",
         icon: "gift"
     },
     
     plans: [
         {
-            id: "basic",
-            name: "Başlangıç Paketi",
-            targetGroup: "5–8. sınıf öğrencileri",
-            price: 29,
+            id: "elementary",
+            name: "5–8. Sınıf Paketi",
+            targetGroup: "İlkokul ve ortaokul öğrencileri",
+            prices: {
+                monthly: 79,
+                yearly: 790
+            },
             currency: "₺",
-            period: "ay",
-            originalPrice: null,
             popular: false,
             features: [
-                "50 soru çözümü/ay",
-                "Temel matematik konuları", 
-                "7/24 AI desteği"
+                "MEB uyumlu içerik",
+                "AI destekli çözümler",
+                "TR OCR desteği"
             ],
             buttonText: "Planı Seç",
             buttonStyle: "outline"
         },
         {
-            id: "premium", 
-            name: "Lise Paketi",
-            targetGroup: "9–12. sınıf öğrencileri",
-            price: 49,
-            currency: "₺", 
-            period: "ay",
-            originalPrice: 59,
+            id: "highschool", 
+            name: "9–12. Sınıf Paketi",
+            targetGroup: "Lise öğrencileri",
+            prices: {
+                monthly: 99,
+                yearly: 990
+            },
+            currency: "₺",
             popular: true,
             features: [
-                "Sınırsız soru çözümü",
-                "Gelişmiş matematik konuları",
-                "Kişiselleştirilmiş öğrenme"
+                "5–12. sınıf içerikleri",
+                "Zorlayıcı soru destekleri",
+                "Geniş konu kapsamı"
             ],
             buttonText: "En Popüler Plan",
             buttonStyle: "solid"
         },
         {
-            id: "pro",
-            name: "Üniversite Paketi", 
-            targetGroup: "Üniversite öğrencileri",
-            price: 79,
+            id: "university",
+            name: "TYT–AYT Paketi", 
+            targetGroup: "Üniversite sınavına hazırlananlar",
+            prices: {
+                monthly: 129,
+                yearly: 1290
+            },
             currency: "₺",
-            period: "ay", 
-            originalPrice: null,
             popular: false,
             features: [
-                "Sınırsız soru çözümü",
-                "İleri matematik & hesap",
-                "Öncelikli destek"
+                "Sınav modlu çözümler",
+                "Zamanlı deneme destekleri",
+                "AI analizli çözüm stratejileri"
             ],
             buttonText: "Planı Seç",
             buttonStyle: "outline"

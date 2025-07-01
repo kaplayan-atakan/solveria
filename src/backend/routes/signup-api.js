@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const User = require('./User'); // User model in the same directory
+const User = require('../models/User'); // User model in the models directory
 const router = express.Router();
 
 // POST /api/signup - User registration endpoint

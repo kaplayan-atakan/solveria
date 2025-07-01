@@ -43,4 +43,4 @@ Write-Host "Press Ctrl+C to stop the server" -ForegroundColor Yellow
 Write-Host ""
 
 # Start the server
-node server.js
+node src/backend/server.js

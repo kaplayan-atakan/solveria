@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
-require('dotenv').config();
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 // Import route modules
-const signupRoutes = require('./signup-api');
-const ocrRoutes = require('./ocr-api');
-const solverRoutes = require('./solver-api');
+const signupRoutes = require('./routes/signup-api');
+const ocrRoutes = require('./routes/ocr-api');
+const solverRoutes = require('./routes/solver-api');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -63,23 +63,23 @@ app.use('/', solverRoutes);
 
 // Serve HTML files
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'solveria-landing.html'));
+    res.sendFile(path.join(__dirname, '../frontend/pages/solveria-landing.html'));
 });
 
 app.get('/signup', (req, res) => {
-    res.sendFile(path.join(__dirname, 'signup-form.html'));
+    res.sendFile(path.join(__dirname, '../frontend/pages/signup-form.html'));
 });
 
 app.get('/solve', (req, res) => {
-    res.sendFile(path.join(__dirname, 'math-solver.html'));
+    res.sendFile(path.join(__dirname, '../frontend/pages/math-solver.html'));
 });
 
 app.get('/editor', (req, res) => {
-    res.sendFile(path.join(__dirname, 'text-editor.html'));
+    res.sendFile(path.join(__dirname, '../frontend/pages/text-editor.html'));
 });
 
 app.get('/test', (req, res) => {
-    res.sendFile(path.join(__dirname, 'test.html'));
+    res.sendFile(path.join(__dirname, '../frontend/pages/test.html'));
 });
 
 // Health check endpoint
