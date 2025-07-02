@@ -1,0 +1,120 @@
+## 1. solveria-landing.html
+
+**Güçlü Yönler:**
+- Modern, ferah ve renkli bir arayüz. Gradient, background pattern ve matematik temalı süslemeler başarılı.
+- Tailwind kullanımı ile tutarlı spacing ve responsive yapı sağlanmış.
+- Hero section’daki telefon mockup görseli uygulamanın ana değer teklifini görselleştiriyor.
+- CTA (Call to Action) butonları belirgin, çoklu aksiyon sunuyor (Kayıt ol, Ücretsiz Dene, Demo İzle).
+- Navigasyon bar ve mobil menü farklı ekran boyutları için optimize edilmiş.
+- SSS ve fiyatlar gibi ana bölümler landing page’de yerli yerinde.
+
+**Zayıf Yönler & Geliştirme Önerileri:**
+- Hero’daki telefon mockup’ı çok büyük, küçük ekranlarda ekranı kaplayabilir. Görseli biraz küçültebilirsin.
+- Arka plan desenleri (svg ve blur shape’ler) bazı ekranlarda gereğinden fazla dikkat çekici olabilir, opacity azaltılabilir.
+- Mobile menü açıldığında sayfa kayması engellenmeli (body’ye `overflow: hidden` eklenebilir).
+- Navigasyondaki dil seçici sadeleştirilebilir, gerekirse bayrak ikonları tek satırda sunulabilir.
+- CTA’larda buton gölgeleri fazla abartılı, sadeleşebilir.
+- Bölümler arası geçişte daha fazla “anchor scroll” animasyonu eklenebilir.
+- Fiyat kartları dinamik geliyor ama içerik fazla kalabalık, 2’den fazla özellik listeleniyorsa “daha fazla” açılır menü gibi bir yapı eklenebilir.
+- SSS bölümü, çok uzun olduğunda “accordion” açıldığında diğerleri kapanmalı (mevcut kodda var gibi ama test edilmeli).
+- Farklı ekran boyutlarında padding/margin ayarları gözden geçirilmeli. Büyük ekranlarda içerik ortalanmış, küçük ekranlarda kenarlara çok yakın durabilir.
+- Footer eksik, landing’in sonunda bir iletişim/bağlantı alanı eklenmeli.
+
+---
+
+## 2. math-solver.html
+
+**Güçlü Yönler:**
+- Adım adım kullanıcı akışı (“Yükle”, “Düzenle”, “Çöz”) net biçimde gösterilmiş.
+- Upload ve OCR, düzenleme ve AI çözüm bölümleri net ayrılmış.
+- Kapsamlı hata yönetimi ve kullanıcıya durum bildirimleri mevcut.
+- Renkler, ikonlar ve butonlar uygulamanın genel temasıyla uyumlu.
+
+**Zayıf Yönler & Geliştirme Önerileri:**
+- Adım göstergesi (stepper) daha ince ve yatay çizgiyle sadeleştirilebilir.
+- Upload alanında “drag and drop” desteği güzel, fakat kullanıcıya örnek görsel veya placeholder eklenirse daha çekici olur.
+- “Kamera Aç” butonu, mobilde gerçekten kamera açıyor mu? (Şu anda sadece dosya seçim açıyor, UX açısından yanıltıcı.)
+- “AI ile Çöz” ve benzeri butonlar loading state’lerinde spinner veya progress bar ile desteklenmeli.
+- Çözüm ekranında AI’nın yanına “kaydet”, “paylaş”, “pdf indir” gibi ek aksiyonlar eklenebilir.
+- Footer çok basit, landing’e dönüş dışında ek bilgi yok.
+- Sayfa çok uzun olursa, adımlar arasında geçerken otomatik scroll-to-section uygulanabilir.
+- Hata mesajları üstte kalıyor, dismiss edilebilir toast olarak gösterilebilir.
+
+---
+
+## 3. pricing-demo.html
+
+**Güçlü Yönler:**
+- Ana başlık ve alt başlıklar, fiyatlandırmanın öne çıkmasını sağlıyor.
+- Fiyatlandırma bölümü iframe ile ayrılmış, modüler yaklaşım için iyi.
+- Footer detaylı ve çok kolonlu, profesyonel bir görünüm sağlıyor.
+
+**Zayıf Yönler & Geliştirme Önerileri:**
+- Iframe kullanımı responsive için riskli, yüksekliği sabit (1200px) — dinamik içeriğe göre otomatik yükseklik önerilir.
+- Navigasyon linkleri (Ana Sayfa, Fiyatlandırma) tıklanabilir ama bazıları dummy, “#” linkler gerçek sayfalara yönlendirmeli.
+- Hero bölümündeki butonlar (Ücretsiz Dene, Demo İzle) arasında daha fazla kontrast olabilir.
+- Footer’da sosyal medya, kısa iletişim bilgisi veya logo eklenebilir.
+
+---
+
+## 4. signup-form.html
+
+**Güçlü Yönler:**
+- Kart stili form, net ve modern.
+- Gerekli alanlar, örnek placeholder’lar ve ikonlarla desteklenmiş.
+- Şifre gizle/göster, güçlü şifre uyarıları, anlık doğrulama mevcut.
+- Kayıt başarılıysa yeşil kutuda mesaj çıkıyor, başarılı UX.
+- Gizlilik ve şartlar için checkbox ve linkler net biçimde sunulmuş.
+
+**Zayıf Yönler & Geliştirme Önerileri:**
+- Şifre gereksinimleri daha açık ve animasyonlu bir şekilde gösterilebilir (ör. her gereksinim dolduğunda tik işareti).
+- Formdaki butonlarda loading animasyonu kısıtlı, daha çekici hale getirilebilir.
+- Başarılı kayıt sonrası kullanıcıyı otomatik yönlendirme (ör. ana sayfa ya da giriş) daha iyi olabilir.
+- Erişilebilirlik (a11y): Renk körlüğü için kontrast oranı ve input etiketlerinin okunabilirliği kontrol edilmeli.
+
+---
+
+## 5. test.html
+
+**Güçlü Yönler:**
+- API testleri için sade, fonksiyonel bir arayüz.
+- Farklı test bölümleri net biçimde ayrılmış (Health, OCR, AI Solver, Signup).
+- Sonuçlar için renkli geri bildirim kutuları ve kod bloğu sunumu başarılı.
+
+**Zayıf Yönler & Geliştirme Önerileri:**
+- Tasarım çok temel, test sayfası için yeterli ama marka kimliği yok.
+- Butonlar ve inputlar biraz daha büyük ve aralıklı olabilir.
+- Navigasyon kısmı landing page’e geri dönüş için kolaylık sağlıyor, ama üstte persistent navbar ile de eklenebilir.
+
+---
+
+## 6. text-editor.html
+
+**Güçlü Yönler:**
+- OCR sonucu düzenleme ekranı sade ve işlevsel.
+- “Hızlı düzenleme” butonları (temizle, büyük harf, küçük harf, kırp) kullanıcı deneyimini iyileştirir.
+- Karakter sayacı, uyarı ve bilgi mesajları mevcut.
+- Devam et, yeniden çek gibi butonlarla kullanıcı yönlendirmesi net.
+
+**Zayıf Yönler & Geliştirme Önerileri:**
+- Textarea auto-resize güzel, ama karakter sınırı görsel veya progress bar ile de desteklenebilir.
+- “Kaydet” sonrası otomatik bir sonraki adıma geçiş yapılmalı.
+- Mobilde input ve buton spacing’i biraz daha artırılabilir.
+- Uyarılar (alert) toast ya da modal olarak da sunulabilir.
+
+---
+
+## Genel Eleştiriler ve Tavsiyeler
+
+**Artılar:**
+- Tüm sayfalarda modern renkler ve fontlar kullanılmış, marka kimliği iyi oturmuş.
+- Tailwind ile responsive ve tutarlı bir görünüm elde edilmiş.
+- Kullanıcı akışı net, özellikle ana landing ve solver sayfasında.
+
+**Geliştirilebilecek Noktalar:**
+- Farklı ekran boyutları için spacing ve boyutlar tekrar gözden geçirilmeli.
+- Uyarı ve başarılı mesajlar için toast notification gibi modern pattern’ler kullanılabilir.
+- Bazı action’larda (AI çöz, kayıt ol, vs.) daha belirgin loading state’leri kullanılmalı.
+- Footer ve header bileşenleri tüm sayfalarda daha tutarlı ve kapsamlı olabilir.
+- Erişilebilirlik (a11y) iyileştirmeleri: Kontrast, label, tab index, vs.
+- Daha fazla kullanıcı testi ile gerçek kullanıcıdan alınan geri bildirimlere göre küçük dokunuşlar yapılabilir.

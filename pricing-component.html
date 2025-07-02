@@ -1,0 +1,362 @@
+<!-- 
+🎯 REUSABLE PRICING SECTION COMPONENT
+=====================================
+Copy this section into any HTML file and it will work independently.
+All pricing data is defined at the top for easy updates.
+-->
+
+<section id="pricing-section" class="py-16 bg-background">
+<script>
+// 📝 PRICING DATA - UPDATE HERE TO CHANGE PRICES/PLANS
+// ====================================================
+
+window.SolveriaPricing = {
+    header: {
+        title: "Eğitim Seviyene Özel",
+        subtitle: "Matematik hedeflerine ulaşmak için tasarlanmış esnek paketler",
+        titleHighlight: "Matematik Paketleri"
+    },
+    
+    // Billing toggle configuration
+    billingToggle: {
+        enabled: true,
+        monthlyLabel: "Aylık",
+        yearlyLabel: "Yıllık",
+        savingsText: "2 AY ÜCRETSİZ"
+    },
+    
+    promoMessage: {
+        text: "Yıllık planla 2 ay bizden hediye – %17 tasarruf!",
+        icon: "gift"
+    },
+    
+    plans: [
+        {
+            id: "elementary",
+            name: "5–8. Sınıf Paketi",
+            targetGroup: "İlkokul ve ortaokul öğrencileri",
+            prices: {
+                monthly: 79,
+                yearly: 790
+            },
+            currency: "₺",
+            popular: false,
+            features: [
+                "MEB uyumlu içerik",
+                "AI destekli çözümler",
+                "TR OCR desteği"
+            ],
+            buttonText: "Planı Seç",
+            buttonStyle: "outline"
+        },
+        {
+            id: "highschool", 
+            name: "9–12. Sınıf Paketi",
+            targetGroup: "Lise öğrencileri",
+            prices: {
+                monthly: 99,
+                yearly: 990
+            },
+            currency: "₺",
+            popular: true,
+            features: [
+                "5–12. sınıf içerikleri",
+                "Zorlayıcı soru destekleri",
+                "Geniş konu kapsamı"
+            ],
+            buttonText: "En Popüler Plan",
+            buttonStyle: "solid"
+        },
+        {
+            id: "university",
+            name: "TYT–AYT Paketi", 
+            targetGroup: "Üniversite sınavına hazırlananlar",
+            prices: {
+                monthly: 129,
+                yearly: 1290
+            },
+            currency: "₺",
+            popular: false,
+            features: [
+                "Sınav modlu çözümler",
+                "Zamanlı deneme destekleri",
+                "AI analizli çözüm stratejileri"
+            ],
+            buttonText: "Planı Seç",
+            buttonStyle: "outline"
+        }
+    ],
+    
+    featureIcons: {
+        "50 soru çözümü/ay": "calculator",
+        "Sınırsız soru çözümü": "infinity", 
+        "Temel matematik konuları": "book-open",
+        "Gelişmiş matematik konuları": "graduation-cap",
+        "İleri matematik & hesap": "trending-up",
+        "7/24 AI desteği": "bot",
+        "Kişiselleştirilmiş öğrenme": "user-check",
+        "Öncelikli destek": "headphones"
+    }
+};
+</script>
+
+<div class="container mx-auto px-4 max-w-7xl">
+    <!-- Section Header -->
+    <div class="text-center mb-16">
+        <h2 id="solveria-pricing-title" class="text-4xl md:text-5xl font-bold text-text-dark mb-4"></h2>
+        <p id="solveria-pricing-subtitle" class="text-xl text-text-muted max-w-2xl mx-auto"></p>
+    </div>
+
+    <!-- Pricing Cards -->
+    <div id="solveria-pricing-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"></div>
+
+    <!-- Promo Message -->
+    <div class="text-center">
+        <div id="solveria-promo-message" class="inline-flex items-center bg-accent/20 text-text-dark px-6 py-3 rounded-full border border-accent/30"></div>
+    </div>
+</div>
+
+<style>
+/* Pricing Section Specific Styles */
+#pricing-section .popular-card {
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+#pricing-section .popular-badge {
+    background: linear-gradient(135deg, #3A86FF 0%, #00B894 100%);
+}
+
+#pricing-section .hover-scale {
+    transition: transform 0.2s ease-in-out;
+}
+
+#pricing-section .hover-scale:hover {
+    transform: translateY(-4px);
+}
+
+#pricing-section .popular-card.hover-scale:hover {
+    transform: scale(1.05) translateY(-4px);
+}
+</style>
+
+<script>
+// 🚀 PRICING SECTION INITIALIZATION
+// =================================
+
+(function() {
+    'use strict';
+    
+    function initSolveriaPricing() {
+        if (!window.SolveriaPricing) {
+            console.error('SolveriaPricing data not found');
+            return;
+        }
+        
+        generatePricingHeader();
+        generatePricingCards(); 
+        generatePromoMessage();
+        
+        // Initialize icons if Lucide is available
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+    
+    function generatePricingHeader() {
+        const data = window.SolveriaPricing.header;
+        const titleEl = document.getElementById('solveria-pricing-title');
+        const subtitleEl = document.getElementById('solveria-pricing-subtitle');
+        
+        if (titleEl && subtitleEl) {
+            let titleHTML = data.title;
+            if (data.titleHighlight) {
+                titleHTML = titleHTML.replace(
+                    data.titleHighlight,
+                    `<span class="text-primary">${data.titleHighlight}</span>`
+                );
+            }
+            
+            titleEl.innerHTML = titleHTML;
+            subtitleEl.textContent = data.subtitle;
+        }
+    }
+    
+    function generatePricingCards() {
+        const container = document.getElementById('solveria-pricing-cards');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        window.SolveriaPricing.plans.forEach((plan, index) => {
+            const cardHTML = createPricingCard(plan);
+            container.insertAdjacentHTML('beforeend', cardHTML);
+        });
+    }
+    
+    function createPricingCard(plan) {
+        const isPopular = plan.popular;
+        const cardClasses = `
+            relative bg-white rounded-2xl shadow-lg border-2 p-8 hover-scale
+            ${isPopular ? 'border-primary popular-card' : 'border-gray-100'}
+        `.trim();
+
+        const buttonClasses = plan.buttonStyle === 'solid' 
+            ? 'bg-primary text-white hover:bg-blue-600' 
+            : 'border-2 border-primary text-primary hover:bg-primary hover:text-white';
+
+        const originalPriceHTML = plan.originalPrice 
+            ? `<span class="text-lg text-gray-400 line-through mr-2">${plan.currency}${plan.originalPrice}</span>`
+            : '';
+
+        const featuresHTML = plan.features.map(feature => {
+            const iconName = window.SolveriaPricing.featureIcons[feature] || 'check';
+            return `
+                <li class="flex items-center text-text-muted">
+                    <i data-lucide="${iconName}" class="w-5 h-5 text-secondary mr-3 flex-shrink-0"></i>
+                    <span>${feature}</span>
+                </li>
+            `;
+        }).join('');
+
+        return `
+            <div class="${cardClasses}">
+                ${isPopular ? `
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <span class="popular-badge text-white text-sm font-semibold px-4 py-2 rounded-full">
+                            En Popüler
+                        </span>
+                    </div>
+                ` : ''}
+                
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-bold text-text-dark mb-2">${plan.name}</h3>
+                    <p class="text-text-muted mb-6">${plan.targetGroup}</p>
+                    
+                    <div class="mb-6">
+                        ${originalPriceHTML}
+                        <span class="text-4xl font-bold text-text-dark">${plan.currency}${plan.price}</span>
+                        <span class="text-text-muted">/${plan.period}</span>
+                    </div>
+                </div>
+
+                <ul class="space-y-4 mb-8">
+                    ${featuresHTML}
+                </ul>
+
+                <button 
+                    class="w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 ${buttonClasses}"
+                    onclick="window.selectSolveriaPlan && window.selectSolveriaPlan('${plan.id}')"
+                >
+                    ${plan.buttonText}
+                </button>
+            </div>
+        `;
+    }
+    
+    function generatePromoMessage() {
+        const promoEl = document.getElementById('solveria-promo-message');
+        if (!promoEl) return;
+        
+        const data = window.SolveriaPricing.promoMessage;
+        const iconName = data.icon || 'gift';
+        
+        promoEl.innerHTML = `
+            <i data-lucide="${iconName}" class="w-5 h-5 text-accent mr-2"></i>
+            <span class="font-medium">${data.text}</span>
+        `;
+    }
+    
+    // Global plan selection function
+    window.selectSolveriaPlan = function(planId) {
+        const plan = window.SolveriaPricing.plans.find(p => p.id === planId);
+        if (plan) {
+            console.log('Selected plan:', plan);
+            
+            // Example implementations:
+            
+            // 1. Show alert (for demo)
+            alert(`${plan.name} seçildi! Fiyat: ${plan.currency}${plan.price}/${plan.period}`);
+            
+            // 2. Redirect to signup with plan parameter
+            // window.location.href = `/signup?plan=${planId}`;
+            
+            // 3. Open modal
+            // showCheckoutModal(plan);
+            
+            // 4. Scroll to signup form
+            // document.getElementById('signup-form')?.scrollIntoView({ behavior: 'smooth' });
+            
+            // 5. Custom event for other scripts to listen
+            window.dispatchEvent(new CustomEvent('solveriaPlanSelected', { 
+                detail: { plan: plan } 
+            }));
+        }
+    };
+    
+    // Auto-initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSolveriaPricing);
+    } else {
+        initSolveriaPricing();
+    }
+    
+    // Export update function
+    window.updateSolveriaPricing = function(newData) {
+        Object.assign(window.SolveriaPricing, newData);
+        initSolveriaPricing();
+    };
+    
+})();
+</script>
+</section>
+
+<!-- 
+📚 USAGE INSTRUCTIONS:
+======================
+
+1. STANDALONE USE:
+   - Copy this entire section to any HTML file
+   - Ensure Tailwind CSS and Lucide icons are loaded
+   - It will work independently
+
+2. INTEGRATION:
+   - Copy the <section> element into your existing page
+   - Make sure the Tailwind classes match your color scheme
+   - Customize the selectSolveriaPlan function for your needs
+
+3. EASY UPDATES:
+   - All pricing data is in window.SolveriaPricing object
+   - Change prices: SolveriaPricing.plans[0].price = 39
+   - Add features: SolveriaPricing.plans[0].features.push("New feature")
+   - Update: window.updateSolveriaPricing({})
+
+4. CUSTOMIZATION:
+   - Modify colors in the Tailwind classes
+   - Change icons in featureIcons mapping
+   - Adjust responsive breakpoints in grid classes
+
+5. PLAN SELECTION:
+   - Customize window.selectSolveriaPlan function
+   - Options: redirect, modal, form autofill, analytics tracking
+
+EXAMPLE INTEGRATION WITH EXISTING LANDING PAGE:
+===============================================
+
+// In your main landing page script:
+document.addEventListener('solveriaPlanSelected', function(event) {
+    const selectedPlan = event.detail.plan;
+    
+    // Auto-fill signup form
+    document.getElementById('signup-plan').value = selectedPlan.id;
+    
+    // Track analytics
+    gtag('event', 'plan_selected', {
+        plan_name: selectedPlan.name,
+        plan_price: selectedPlan.price
+    });
+    
+    // Scroll to signup
+    document.getElementById('signup-form').scrollIntoView();
+});
+-->

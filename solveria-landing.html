@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solveria - AI-Powered Math Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3A86FF',
+                        secondary: '#00B894',
+                        accent: '#FFE66D',
+                        background: '#F9FAFB',
+                        'text-dark': '#2D3436',
+                        'text-muted': '#6B7280'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>    <style>
+        body { 
+            font-family: 'Inter', sans-serif;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(58, 134, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 184, 148, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 60% 40%, rgba(255, 230, 109, 0.03) 0%, transparent 50%),
+                linear-gradient(135deg, #F9FAFB 0%, #EBF4FF 25%, #E8F8F5 50%, #F3F7FF 75%, #F9FAFB 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Mathematical Symbol Background */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg width='1200' height='800' viewBox='0 0 1200 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%233A86FF' fill-opacity='0.06' font-family='serif'%3E%3Ctext x='100' y='100' font-size='24' transform='rotate(-15 100 100)'%3E∫ f(x)dx%3C/text%3E%3Ctext x='300' y='150' font-size='20' transform='rotate(8 300 150)'%3Ex² + y² = r²%3C/text%3E%3Ctext x='500' y='80' font-size='18' transform='rotate(-12 500 80)'%3Ee^(iπ) + 1 = 0%3C/text%3E%3Ctext x='700' y='180' font-size='32' transform='rotate(20 700 180)'%3Eπ%3C/text%3E%3Ctext x='900' y='120' font-size='16' transform='rotate(-8 900 120)'%3E∑ᵢ₌₁ⁿ i²%3C/text%3E%3Ctext x='150' y='300' font-size='22' transform='rotate(12 150 300)'%3E∂f/∂x%3C/text%3E%3Ctext x='400' y='350' font-size='28' transform='rotate(-18 400 350)'%3E∞%3C/text%3E%3Ctext x='650' y='320' font-size='20' transform='rotate(15 650 320)'%3E√(a² + b²)%3C/text%3E%3Ctext x='850' y='380' font-size='24' transform='rotate(-5 850 380)'%3Esin²x + cos²x%3C/text%3E%3Ctext x='1000' y='300' font-size='30' transform='rotate(10 1000 300)'%3E∇%3C/text%3E%3Ctext x='80' y='500' font-size='18' transform='rotate(-20 80 500)'%3Elimₓ→₀ sin(x)/x%3C/text%3E%3Ctext x='320' y='550' font-size='26' transform='rotate(25 320 550)'%3E∑%3C/text%3E%3Ctext x='580' y='520' font-size='16' transform='rotate(-10 580 520)'%3Ea² + b² = c²%3C/text%3E%3Ctext x='780' y='580' font-size='22' transform='rotate(18 780 580)'%3E2πr%3C/text%3E%3Ctext x='950' y='520' font-size='20' transform='rotate(-15 950 520)'%3Ed/dx f(x)%3C/text%3E%3Ctext x='200' y='700' font-size='24' transform='rotate(8 200 700)'%3E∫∫∫ dxdydz%3C/text%3E%3Ctext x='480' y='720' font-size='18' transform='rotate(-12 480 720)'%3En! = n×(n-1)!%3C/text%3E%3Ctext x='720' y='680' font-size='28' transform='rotate(22 720 680)'%3Eα%3C/text%3E%3Ctext x='920' y='720' font-size='16' transform='rotate(-8 920 720)'%3Elog₂(8) = 3%3C/text%3E%3C/g%3E%3Cg fill='%2300B894' fill-opacity='0.04' font-family='serif'%3E%3Ctext x='200' y='250' font-size='20' transform='rotate(18 200 250)'%3Eθ%3C/text%3E%3Ctext x='450' y='200' font-size='16' transform='rotate(-25 450 200)'%3E±√(b²-4ac)%3C/text%3E%3Ctext x='750' y='250' font-size='24' transform='rotate(12 750 250)'%3E∂²f/∂x²%3C/text%3E%3Ctext x='1050' y='200' font-size='22' transform='rotate(-18 1050 200)'%3E≈%3C/text%3E%3Ctext x='120' y='450' font-size='26' transform='rotate(15 120 450)'%3E∫%3C/text%3E%3Ctext x='380' y='480' font-size='18' transform='rotate(-8 380 480)'%3EV = 4/3πr³%3C/text%3E%3Ctext x='680' y='450' font-size='20' transform='rotate(20 680 450)'%3EΔx → 0%3C/text%3E%3Ctext x='880' y='480' font-size='24' transform='rotate(-12 880 480)'%3E√%3C/text%3E%3Ctext x='160' y='650' font-size='22' transform='rotate(10 160 650)'%3Eβ%3C/text%3E%3Ctext x='420' y='650' font-size='16' transform='rotate(-15 420 650)'%3E∥v∥ = √(x²+y²)%3C/text%3E%3Ctext x='680' y='620' font-size='18' transform='rotate(25 680 620)'%3Eγ%3C/text%3E%3Ctext x='880' y='650' font-size='20' transform='rotate(-5 880 650)'%3E≡%3C/text%3E%3C/g%3E%3C/svg%3E");
+            background-size: 1200px 800px;
+            background-repeat: repeat;
+            background-position: 0 0;
+            z-index: -2;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        
+        .gradient-bg { 
+            background: linear-gradient(135deg, #3A86FF 0%, #00B894 100%); 
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.9) 0%, 
+                rgba(235, 244, 255, 0.8) 50%,
+                rgba(232, 248, 245, 0.9) 100%
+            );
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -25%;
+            width: 150%;
+            height: 200%;
+            background: 
+                radial-gradient(circle, rgba(57, 134, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 184, 148, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 230, 109, 0.06) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        .features-bg {
+            background: linear-gradient(145deg, 
+                rgba(249, 250, 251, 0.95) 0%, 
+                rgba(235, 244, 255, 0.8) 50%, 
+                rgba(232, 248, 245, 0.9) 100%
+            );
+            position: relative;
+        }
+        
+        .features-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(57, 134, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 184, 148, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 230, 109, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .pricing-pattern {
+            background: linear-gradient(to bottom, 
+                rgba(255, 255, 255, 0.95) 0%,
+                rgba(247, 250, 252, 0.9) 100%
+            );
+            position: relative;
+        }
+        
+        .faq-bg {
+            background: linear-gradient(160deg, 
+                rgba(249, 250, 251, 0.98) 0%, 
+                rgba(235, 244, 255, 0.85) 40%, 
+                rgba(232, 248, 245, 0.9) 100%
+            );
+            position: relative;
+        }
+        
+        .wave-decoration {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10c20-8 40 8 60 0s40-8 60 0v10H0V10z' fill='%2300B894' fill-opacity='0.05'/%3E%3C/svg%3E");
+            background-repeat: repeat-x;
+            background-position: bottom;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(1deg); }
+            66% { transform: translateY(-15px) rotate(-1deg); }
+        }
+        
+        .blur-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            pointer-events: none;
+            opacity: 0.4;
+        }
+        
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(45deg, rgba(57, 134, 255, 0.08), rgba(0, 184, 148, 0.08));
+            top: 10%;
+            right: 10%;
+            animation: float 15s ease-in-out infinite;
+        }
+        
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(225deg, rgba(255, 230, 109, 0.08), rgba(57, 134, 255, 0.08));
+            bottom: 20%;
+            left: 15%;
+            animation: float 20s ease-in-out infinite reverse;
+        }
+        
+        /* Math symbols floating animation */
+        .math-float {
+            position: absolute;
+            color: rgba(58, 134, 255, 0.08);
+            font-family: 'Times New Roman', serif;
+            pointer-events: none;
+            user-select: none;
+            z-index: -1;
+            animation: gentleFloat 25s ease-in-out infinite;
+        }
+        
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); opacity: 0.08; }
+            25% { transform: translateY(-20px) translateX(10px) rotate(2deg); opacity: 0.12; }
+            50% { transform: translateY(-10px) translateX(20px) rotate(-1deg); opacity: 0.06; }
+            75% { transform: translateY(-15px) translateX(-5px) rotate(1deg); opacity: 0.10; }
+        }
+    </style>
+</head>
+<body class="bg-background text-text-dark font-inter">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-b border-gray-200 z-50">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
+                        <i data-lucide="calculator" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <span class="text-2xl font-bold text-text-dark">Solveria</span>
+                </div>                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#how-it-works" class="text-text-muted hover:text-text-dark transition-colors font-medium" data-translate="nav.howItWorks">Nasıl Çalışır</a>
+                    <a href="#features" class="text-text-muted hover:text-text-dark transition-colors font-medium" data-translate="nav.features">Özellikler</a>
+                    <a href="#pricing" class="text-text-muted hover:text-text-dark transition-colors font-medium" data-translate="nav.pricing">Fiyatlar</a>
+                    <a href="#faq" class="text-text-muted hover:text-text-dark transition-colors font-medium" data-translate="nav.faq">SSS</a>
+                    
+                    <!-- Language Toggle -->
+                    <div class="relative">
+                        <select id="languageToggle" class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm font-medium text-text-dark focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent cursor-pointer">
+                            <option value="tr" selected>🇹🇷 Türkçe</option>
+                            <option value="en">🇺🇸 English</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Signup Button -->
+                    <a href="signup-form.html" class="bg-secondary text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-all font-semibold shadow-lg hover:shadow-xl transform hover:scale-105" data-translate="nav.signup">
+                        Kayıt Ol
+                    </a>
+                    
+                    <button class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-all font-semibold shadow-lg hover:shadow-xl transform hover:scale-105" data-translate="nav.startSolving">
+                        Çözmeye Başla
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2" id="mobile-menu-btn">
+                    <i data-lucide="menu" class="w-6 h-6 text-text-dark"></i>
+                </button>
+            </div>            <!-- Mobile Menu -->
+            <div class="md:hidden hidden" id="mobile-menu">
+                <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200 rounded-b-lg shadow-lg">
+                    <a href="#how-it-works" class="block px-3 py-2 text-text-muted hover:text-text-dark font-medium" data-translate="nav.howItWorks">Nasıl Çalışır</a>
+                    <a href="#features" class="block px-3 py-2 text-text-muted hover:text-text-dark font-medium" data-translate="nav.features">Özellikler</a>
+                    <a href="#pricing" class="block px-3 py-2 text-text-muted hover:text-text-dark font-medium" data-translate="nav.pricing">Fiyatlar</a>
+                    <a href="#faq" class="block px-3 py-2 text-text-muted hover:text-text-dark font-medium" data-translate="nav.faq">SSS</a>
+                      <!-- Mobile Language Toggle -->
+                    <div class="px-3 py-2">
+                        <select id="mobileLanguageToggle" class="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm font-medium text-text-dark focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <option value="tr" selected>🇹🇷 Türkçe</option>
+                            <option value="en">🇺🇸 English</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Mobile Signup Button -->
+                    <a href="signup-form.html" class="block mx-3 mt-2 bg-secondary text-white px-6 py-2 rounded-lg font-semibold text-center hover:bg-green-600 transition-colors" data-translate="nav.signup">
+                        Kayıt Ol
+                    </a>
+                    
+                    <button class="w-full mt-2 bg-primary text-white px-6 py-2 rounded-lg font-semibold" data-translate="nav.startSolving">
+                        Çözmeye Başla
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>        <!-- Hero Section -->
+        <section class="pt-20 pb-16 hero-gradient min-h-screen flex items-center">
+            <div class="blur-shape shape-1"></div>
+            <div class="blur-shape shape-2"></div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                    <!-- Left Content -->                    <div class="text-center lg:text-left">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-text-dark mb-6 leading-tight">
+                            <span data-translate="hero.title">AI Destekli Matematik Çözümleri</span>
+                            <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent" data-translate="hero.titleHighlight">Anında</span>
+                        </h1>
+                        <p class="text-xl md:text-2xl text-text-muted mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed" data-translate="hero.subtitle">
+                            Matematik sorunuzu yükleyin ve adım adım cevaplar alın. 5-12. sınıf ve TYT/AYT için Türkçe & İngilizce desteği.
+                        </p>
+                          <!-- CTA Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
+                            <a href="signup-form.html" class="bg-secondary text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-green-600 transform hover:scale-105 transition-all shadow-lg hover:shadow-xl flex items-center justify-center">
+                                <i data-lucide="user-plus" class="w-5 h-5 mr-2"></i>
+                                <span data-translate="hero.signup">Kayıt Ol</span>
+                            </a>
+                            <button class="bg-primary text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-600 transform hover:scale-105 transition-all shadow-lg hover:shadow-xl flex items-center justify-center">
+                                <i data-lucide="zap" class="w-5 h-5 mr-2"></i>
+                                <span data-translate="hero.tryFree">Ücretsiz Dene</span>
+                            </button>
+                            <button class="bg-white text-text-dark px-8 py-4 rounded-xl text-lg font-semibold border-2 border-secondary hover:bg-secondary hover:text-white transform hover:scale-105 transition-all shadow-lg hover:shadow-xl flex items-center justify-center">
+                                <i data-lucide="play" class="w-5 h-5 mr-2"></i>
+                                <span data-translate="hero.watchDemo">Demo İzle</span>
+                            </button>
+                        </div>
+
+                        <!-- Free Trial Banner -->
+                        <div class="inline-flex items-center bg-accent/20 border border-accent rounded-full px-6 py-3">
+                            <i data-lucide="gift" class="w-5 h-5 text-orange-600 mr-2"></i>
+                            <span class="text-orange-800 font-semibold" data-translate="hero.freeTrial">İlk 3 soru tamamen ücretsiz!</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Visual -->
+                    <div class="flex justify-center lg:justify-end">
+                        <div class="relative">
+                            <!-- Phone Mockup -->
+                            <div class="w-80 h-[500px] bg-gray-900 rounded-[3rem] p-4 shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                                <div class="w-full h-full bg-white rounded-[2.5rem] overflow-hidden relative">
+                                    <!-- Phone Header -->
+                                    <div class="gradient-bg h-20 flex items-center justify-center relative">
+                                        <span class="text-white font-bold text-lg">Solveria</span>
+                                        <div class="absolute top-3 right-4 w-6 h-3 bg-white/30 rounded-full"></div>
+                                    </div>
+                                    
+                                    <!-- Phone Content -->
+                                    <div class="p-6 space-y-4">                                        <div class="text-center">
+                                            <h3 class="font-semibold text-text-dark mb-2" data-translate="hero.uploadTitle">Sorunuzu Yükleyin</h3>
+                                            <p class="text-sm text-text-muted" data-translate="hero.uploadSubtitle">Fotoğraf çekin veya galeriden seçin</p>
+                                        </div>
+                                        
+                                        <!-- Upload Area -->
+                                        <div class="h-40 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl border-2 border-dashed border-primary/30 flex items-center justify-center">
+                                            <div class="text-center">
+                                                <i data-lucide="camera" class="w-12 h-12 text-primary mx-auto mb-2"></i>
+                                                <p class="text-primary font-medium" data-translate="hero.uploadButton">Fotoğraf Çek</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Math Problem Preview -->
+                                        <div class="bg-gray-50 rounded-lg p-4">
+                                            <div class="text-sm text-text-muted mb-2">Detected equation:</div>
+                                            <div class="font-mono text-text-dark bg-white p-2 rounded border">
+                                                2x + 5 = 15
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Action Button -->
+                                        <button class="w-full bg-primary text-white py-3 rounded-xl font-semibold shadow-lg">
+                                            Get Solution
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Floating Elements -->
+                            <div class="absolute -top-4 -left-4 w-16 h-16 bg-accent rounded-full opacity-60 animate-pulse"></div>
+                            <div class="absolute -bottom-4 -right-4 w-12 h-12 bg-secondary rounded-full opacity-40 animate-bounce"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>        <!-- How It Works -->
+        <section id="how-it-works" class="py-20 bg-white wave-decoration">
+            <div class="math-pattern-subtle"></div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold text-text-dark mb-4" data-translate="howItWorks.title">Nasıl Çalışır?</h2>
+                    <p class="text-xl text-text-muted max-w-2xl mx-auto" data-translate="howItWorks.subtitle">
+                        Sadece 3 basit adımda matematik problemlerinizi çözün
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
+                    <!-- Step 1 -->
+                    <div class="text-center group">
+                        <div class="relative mb-8">
+                            <div class="w-24 h-24 mx-auto bg-gradient-to-br from-primary to-blue-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                <i data-lucide="camera" class="w-12 h-12 text-white"></i>
+                            </div>
+                            <div class="absolute -top-2 -right-2 w-10 h-10 bg-accent rounded-full flex items-center justify-center shadow-lg">
+                                <span class="text-text-dark font-bold text-lg">1</span>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-text-dark mb-4" data-translate="howItWorks.step1.title">Fotoğraf Çek</h3>
+                        <p class="text-text-muted text-lg leading-relaxed" data-translate="howItWorks.step1.desc">
+                            Matematik sorunuzun fotoğrafını çekin veya galeriden yükleyin
+                        </p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="text-center group">
+                        <div class="relative mb-8">
+                            <div class="w-24 h-24 mx-auto bg-gradient-to-br from-secondary to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                <i data-lucide="edit-3" class="w-12 h-12 text-white"></i>
+                            </div>
+                            <div class="absolute -top-2 -right-2 w-10 h-10 bg-accent rounded-full flex items-center justify-center shadow-lg">
+                                <span class="text-text-dark font-bold text-lg">2</span>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-text-dark mb-4" data-translate="howItWorks.step2.title">AI Analizi</h3>
+                        <p class="text-text-muted text-lg leading-relaxed" data-translate="howItWorks.step2.desc">
+                            Gelişmiş AI teknolojimiz sorunuzu anında analiz eder
+                        </p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="text-center group">
+                        <div class="relative mb-8">
+                            <div class="w-24 h-24 mx-auto bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                <i data-lucide="check-circle" class="w-12 h-12 text-white"></i>
+                            </div>
+                            <div class="absolute -top-2 -right-2 w-10 h-10 bg-accent rounded-full flex items-center justify-center shadow-lg">
+                                <span class="text-text-dark font-bold text-lg">3</span>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-text-dark mb-4" data-translate="howItWorks.step3.title">Çözüm Al</h3>
+                        <p class="text-text-muted text-lg leading-relaxed" data-translate="howItWorks.step3.desc">
+                            Detaylı adım adım çözüm ve açıklamalar alın
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>        <!-- Features -->
+        <section id="features" class="py-20 features-bg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold text-text-dark mb-4" data-translate="features.title">Özellikler</h2>
+                    <p class="text-xl text-text-muted max-w-2xl mx-auto" data-translate="features.subtitle">
+                        Matematik öğrenimini kolaylaştıran güçlü özellikler
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature 1 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group hover:scale-105">
+                        <div class="w-14 h-14 bg-gradient-to-br from-primary to-blue-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="brain" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-text-dark mb-3" data-translate="features.ai.title">AI Destekli Çözüm</h3>
+                        <p class="text-text-muted leading-relaxed" data-translate="features.ai.desc">
+                            Gelişmiş yapay zeka teknolojisi ile anında ve doğru çözümler
+                        </p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group hover:scale-105">
+                        <div class="w-14 h-14 bg-gradient-to-br from-secondary to-green-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="list" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-text-dark mb-3" data-translate="features.stepByStep.title">Adım Adım Açıklama</h3>
+                        <p class="text-text-muted leading-relaxed" data-translate="features.stepByStep.desc">
+                            Her problemin detaylı çözüm adımları ve açıklamaları
+                        </p>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group hover:scale-105">
+                        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="languages" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-text-dark mb-3" data-translate="features.multiLanguage.title">Çok Dilli Destek</h3>
+                        <p class="text-text-muted leading-relaxed" data-translate="features.multiLanguage.desc">
+                            Türkçe ve İngilizce tam destek ile öğrenin
+                        </p>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group hover:scale-105">
+                        <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="book-open" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-text-dark mb-3" data-translate="features.allLevels.title">Tüm Seviyeler</h3>
+                        <p class="text-text-muted leading-relaxed" data-translate="features.allLevels.desc">
+                            5-12. sınıf ve TYT/AYT için kapsamlı konu desteği
+                        </p>
+                    </div>
+
+                    <!-- Feature 5 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group hover:scale-105">
+                        <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="zap" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-text-dark mb-3" data-translate="features.instant.title">Anında Sonuç</h3>
+                        <p class="text-text-muted leading-relaxed" data-translate="features.instant.desc">
+                            Saniyeler içinde probleminizin çözümüne ulaşın
+                        </p>
+                    </div>
+
+                    <!-- Feature 6 -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 group hover:scale-105">
+                        <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="trending-up" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-text-dark mb-3" data-translate="features.saveProgress.title">İlerleme Takibi</h3>
+                        <p class="text-text-muted leading-relaxed" data-translate="features.saveProgress.desc">
+                            Çözdüğünüz problemleri kaydedin ve ilerlemenizi takip edin
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>        <!-- Pricing Section - Reusable Component -->
+        <section id="pricing" class="py-20 pricing-pattern">
+        <script>
+        // 📝 PRICING DATA - UPDATE HERE TO CHANGE PRICES/PLANS
+        // ====================================================
+
+        window.SolveriaPricing = {
+            header: {
+                title: "Öğrenci Dostu Fiyatlarla",
+                subtitle: "Matematik başarınızı artırmak için tasarlanmış esnek paketler",
+                titleHighlight: "Matematik Başarısı"
+            },
+            
+            promoMessage: {
+                text: "Yıllık alımlarda %16 indirim – 2 ay bizden hediye!",
+                icon: "gift"
+            },
+            
+            plans: [
+                {
+                    id: "basic",
+                    name: "Başlangıç Paketi",
+                    targetGroup: "5–8. sınıf öğrencileri",
+                    price: 29,
+                    currency: "₺",
+                    period: "ay",
+                    originalPrice: null,
+                    popular: false,
+                    features: [
+                        "50 soru çözümü/ay",
+                        "Temel matematik konuları", 
+                        "7/24 AI desteği"
+                    ],
+                    buttonText: "Planı Seç",
+                    buttonStyle: "outline"
+                },
+                {
+                    id: "premium", 
+                    name: "Lise Paketi",
+                    targetGroup: "9–12. sınıf öğrencileri",
+                    price: 49,
+                    currency: "₺", 
+                    period: "ay",
+                    originalPrice: 59,
+                    popular: true,
+                    features: [
+                        "Sınırsız soru çözümü",
+                        "Gelişmiş matematik konuları",
+                        "Kişiselleştirilmiş öğrenme"
+                    ],
+                    buttonText: "En Popüler Plan",
+                    buttonStyle: "solid"
+                },
+                {
+                    id: "pro",
+                    name: "Üniversite Paketi", 
+                    targetGroup: "Üniversite öğrencileri",
+                    price: 79,
+                    currency: "₺",
+                    period: "ay", 
+                    originalPrice: null,
+                    popular: false,
+                    features: [
+                        "Sınırsız soru çözümü",
+                        "İleri matematik & hesap",
+                        "Öncelikli destek"
+                    ],
+                    buttonText: "Planı Seç",
+                    buttonStyle: "outline"
+                }
+            ],
+            
+            featureIcons: {
+                "50 soru çözümü/ay": "calculator",
+                "Sınırsız soru çözümü": "infinity", 
+                "Temel matematik konuları": "book-open",
+                "Gelişmiş matematik konuları": "graduation-cap",
+                "İleri matematik & hesap": "trending-up",
+                "7/24 AI desteği": "bot",
+                "Kişiselleştirilmiş öğrenme": "user-check",
+                "Öncelikli destek": "headphones"
+            }
+        };
+        </script>
+
+        <div class="container mx-auto px-4 max-w-7xl">
+            <!-- Section Header -->
+            <div class="text-center mb-16">
+                <h2 id="solveria-pricing-title" class="text-4xl md:text-5xl font-bold text-text-dark mb-4"></h2>
+                <p id="solveria-pricing-subtitle" class="text-xl text-text-muted max-w-2xl mx-auto"></p>
+            </div>
+
+            <!-- Pricing Cards -->
+            <div id="solveria-pricing-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"></div>
+
+            <!-- Promo Message -->
+            <div class="text-center">
+                <div id="solveria-promo-message" class="inline-flex items-center bg-accent/20 text-text-dark px-6 py-3 rounded-full border border-accent/30"></div>
+            </div>
+        </div>
+
+        <style>
+        /* Pricing Section Specific Styles */
+        #pricing .popular-card {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        #pricing .popular-badge {
+            background: linear-gradient(135deg, #3A86FF 0%, #00B894 100%);
+        }
+
+        #pricing .hover-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        #pricing .hover-scale:hover {
+            transform: translateY(-4px);
+        }
+
+        #pricing .popular-card.hover-scale:hover {
+            transform: scale(1.05) translateY(-4px);
+        }
+        </style>
+
+        <script>
+        // 🚀 PRICING SECTION INITIALIZATION
+        // =================================
+
+        (function() {
+            'use strict';
+            
+            function initSolveriaPricing() {
+                if (!window.SolveriaPricing) {
+                    console.error('SolveriaPricing data not found');
+                    return;
+                }
+                
+                generatePricingHeader();
+                generatePricingCards(); 
+                generatePromoMessage();
+                
+                // Initialize icons if Lucide is available
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }
+            
+            function generatePricingHeader() {
+                const data = window.SolveriaPricing.header;
+                const titleEl = document.getElementById('solveria-pricing-title');
+                const subtitleEl = document.getElementById('solveria-pricing-subtitle');
+                
+                if (titleEl && subtitleEl) {
+                    let titleHTML = data.title;
+                    if (data.titleHighlight) {
+                        titleHTML = titleHTML.replace(
+                            data.titleHighlight,
+                            `<span class="text-primary">${data.titleHighlight}</span>`
+                        );
+                    }
+                    
+                    titleEl.innerHTML = titleHTML;
+                    subtitleEl.textContent = data.subtitle;
+                }
+            }
+            
+            function generatePricingCards() {
+                const container = document.getElementById('solveria-pricing-cards');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                window.SolveriaPricing.plans.forEach((plan, index) => {
+                    const cardHTML = createPricingCard(plan);
+                    container.insertAdjacentHTML('beforeend', cardHTML);
+                });
+            }
+            
+            function createPricingCard(plan) {
+                const isPopular = plan.popular;
+                const cardClasses = `
+                    relative bg-white rounded-2xl shadow-lg border-2 p-8 hover-scale
+                    ${isPopular ? 'border-primary popular-card' : 'border-gray-100'}
+                `.trim();
+
+                const buttonClasses = plan.buttonStyle === 'solid' 
+                    ? 'bg-primary text-white hover:bg-blue-600' 
+                    : 'border-2 border-primary text-primary hover:bg-primary hover:text-white';
+
+                const originalPriceHTML = plan.originalPrice 
+                    ? `<span class="text-lg text-gray-400 line-through mr-2">${plan.currency}${plan.originalPrice}</span>`
+                    : '';
+
+                const featuresHTML = plan.features.map(feature => {
+                    const iconName = window.SolveriaPricing.featureIcons[feature] || 'check';
+                    return `
+                        <li class="flex items-center text-text-muted">
+                            <i data-lucide="${iconName}" class="w-5 h-5 text-secondary mr-3 flex-shrink-0"></i>
+                            <span>${feature}</span>
+                        </li>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="${cardClasses}">
+                        ${isPopular ? `
+                            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                                <span class="popular-badge text-white text-sm font-semibold px-4 py-2 rounded-full">
+                                    En Popüler
+                                </span>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="text-center mb-8">
+                            <h3 class="text-2xl font-bold text-text-dark mb-2">${plan.name}</h3>
+                            <p class="text-text-muted mb-6">${plan.targetGroup}</p>
+                            
+                            <div class="mb-6">
+                                ${originalPriceHTML}
+                                <span class="text-4xl font-bold text-text-dark">${plan.currency}${plan.price}</span>
+                                <span class="text-text-muted">/${plan.period}</span>
+                            </div>
+                        </div>
+
+                        <ul class="space-y-4 mb-8">
+                            ${featuresHTML}
+                        </ul>
+
+                        <button 
+                            class="w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 ${buttonClasses}"
+                            onclick="window.selectSolveriaPlan && window.selectSolveriaPlan('${plan.id}')"
+                        >
+                            ${plan.buttonText}
+                        </button>
+                    </div>
+                `;
+            }
+            
+            function generatePromoMessage() {
+                const promoEl = document.getElementById('solveria-promo-message');
+                if (!promoEl) return;
+                
+                const data = window.SolveriaPricing.promoMessage;
+                const iconName = data.icon || 'gift';
+                
+                promoEl.innerHTML = `
+                    <i data-lucide="${iconName}" class="w-5 h-5 text-accent mr-2"></i>
+                    <span class="font-medium">${data.text}</span>
+                `;
+            }
+            
+            // Global plan selection function
+            window.selectSolveriaPlan = function(planId) {
+                const plan = window.SolveriaPricing.plans.find(p => p.id === planId);
+                if (plan) {
+                    console.log('Selected plan:', plan);
+                    
+                    // Redirect to signup with plan parameter
+                    window.location.href = `signup-form.html?plan=${planId}&price=${plan.price}`;
+                    
+                    // Custom event for analytics
+                    window.dispatchEvent(new CustomEvent('solveriaPlanSelected', { 
+                        detail: { plan: plan } 
+                    }));
+                }
+            };
+            
+            // Auto-initialize when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initSolveriaPricing);
+            } else {
+                initSolveriaPricing();
+            }
+            
+            // Export update function for easy price changes
+            window.updateSolveriaPricing = function(newData) {
+                Object.assign(window.SolveriaPricing, newData);
+                initSolveriaPricing();
+            };
+            
+        })();
+        </script>
+        </section>        <!-- FAQ Section - Interactive Accordion -->
+        <section id="faq" class="py-20 faq-bg">
+        <script>
+        // 📝 FAQ DATA - EASY TO UPDATE
+        // ============================
+
+        window.SolveriaFAQ = [
+            {
+                id: 'how-it-works',
+                question: 'Solveria nasıl çalışır?',
+                answer: 'Kullanıcılar bir matematik sorusunun fotoğrafını yükler. Sistem OCR ile bu görüntüyü metne çevirir. Kullanıcı metni düzenledikten sonra Solveria, AI destekli adım adım çözüm sunar.',
+                icon: 'zap'
+            },
+            {
+                id: 'supported-topics',
+                question: 'Hangi matematik konularını destekliyorsunuz?',
+                answer: 'Solveria, 5. sınıftan 12. sınıfa kadar MEB müfredatını kapsar. Ayrıca TYT ve AYT\'ye özel soru çözüm desteği sunar.',
+                icon: 'book-open'
+            },
+            {
+                id: 'free-trial',
+                question: 'Ücretsiz deneme sürümü var mı?',
+                answer: 'Evet. Kayıt olmadan veya ödeme yapmadan 3 soruyu tamamen ücretsiz çözebilirsin.',
+                icon: 'gift'
+            },
+            {
+                id: 'mobile-app',
+                question: 'Mobil uygulama mevcut mu?',
+                answer: 'Solveria, tüm mobil tarayıcılarda çalışır. Yakında iOS ve Android sürümleri de yayınlanacak.',
+                icon: 'smartphone'
+            },
+            {
+                id: 'language-support',
+                question: 'Hangi dillerde destek veriyorsunuz?',
+                answer: 'Şu anda Türkçe ve İngilizce matematik sorularında OCR ve AI destekli çözüm sunuyoruz.',
+                icon: 'globe'
+            }
+        ];
+        </script>
+
+        <style>
+        /* FAQ Accordion Animations */
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .faq-content.active {
+            max-height: 500px;
+            transition: max-height 0.3s ease-in;
+        }
+        
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-icon.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .faq-item {
+            transition: all 0.2s ease;
+        }
+        
+        .faq-item:hover {
+            transform: translateY(-2px);
+        }
+        
+        .faq-item.active {
+            box-shadow: 0 10px 25px -5px rgba(58, 134, 255, 0.1), 0 4px 6px -2px rgba(58, 134, 255, 0.05);
+        }
+        </style>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <!-- Section Header -->
+            <div class="text-center mb-16">
+                <div class="flex items-center justify-center space-x-3 mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-xl flex items-center justify-center">
+                        <i data-lucide="help-circle" class="w-7 h-7 text-white"></i>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-bold text-text-dark">Sık Sorulan Sorular</h2>
+                </div>
+                <p class="text-xl text-text-muted max-w-2xl mx-auto leading-relaxed">
+                    Solveria hakkında merak ettiğiniz her şey burada. Daha fazla sorunuz varsa bizimle iletişime geçin.
+                </p>
+            </div>
+
+            <!-- FAQ Accordion -->
+            <div class="space-y-4" id="solveria-faq-container">
+                <!-- FAQ items will be dynamically generated here -->
+            </div>
+
+            <!-- Contact CTA -->
+            <div class="text-center mt-12">
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+                    <div class="flex items-center justify-center space-x-3 mb-4">
+                        <i data-lucide="message-circle" class="w-8 h-8 text-primary"></i>
+                        <h3 class="text-2xl font-semibold text-text-dark">Başka sorunuz mu var?</h3>
+                    </div>
+                    <p class="text-text-muted mb-6 text-lg">
+                        Bulamadığınız bir cevap varsa, uzman ekibimiz size yardımcı olmaktan memnuniyet duyar.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button class="bg-primary text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition-colors flex items-center justify-center font-semibold">
+                            <i data-lucide="mail" class="w-5 h-5 mr-2"></i>
+                            Email Gönder
+                        </button>
+                        <button class="border-2 border-secondary text-secondary px-6 py-3 rounded-xl hover:bg-secondary hover:text-white transition-colors flex items-center justify-center font-semibold">
+                            <i data-lucide="phone" class="w-5 h-5 mr-2"></i>
+                            Bizi Arayın
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        // 🚀 FAQ FUNCTIONALITY
+        // ====================
+
+        (function() {
+            let activeFAQIndex = null;
+
+            function initializeSolveriaFAQ() {
+                const container = document.getElementById('solveria-faq-container');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                window.SolveriaFAQ.forEach((faq, index) => {
+                    const faqItem = createSolveriaFAQItem(faq, index);
+                    container.appendChild(faqItem);
+                });
+                
+                // Initialize Lucide icons
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }
+
+            function createSolveriaFAQItem(faq, index) {
+                const faqItem = document.createElement('div');
+                faqItem.className = 'faq-item bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden';
+                faqItem.id = `solveria-faq-${faq.id}`;
+                
+                faqItem.innerHTML = `
+                    <button 
+                        class="w-full px-6 sm:px-8 py-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors faq-button group"
+                        onclick="window.toggleSolveriaFAQ(${index})"
+                        aria-expanded="false"
+                        aria-controls="solveria-faq-content-${index}"
+                    >
+                        <div class="flex items-center space-x-4 flex-1 min-w-0">
+                            <div class="w-10 h-10 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="${faq.icon}" class="w-5 h-5 text-primary"></i>
+                            </div>
+                            <span class="text-lg font-semibold text-text-dark pr-4 group-hover:text-primary transition-colors">
+                                ${faq.question}
+                            </span>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <i data-lucide="chevron-down" class="w-6 h-6 text-text-muted faq-icon transition-transform"></i>
+                        </div>
+                    </button>
+                    <div 
+                        class="faq-content" 
+                        id="solveria-faq-content-${index}"
+                        aria-labelledby="solveria-faq-button-${index}"
+                    >
+                        <div class="px-6 sm:px-8 pb-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 flex-shrink-0"></div>
+                                <div class="flex-1">
+                                    <p class="text-text-muted leading-relaxed text-lg">
+                                        ${faq.answer}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                return faqItem;
+            }
+
+            window.toggleSolveriaFAQ = function(index) {
+                const faqItem = document.getElementById(`solveria-faq-${window.SolveriaFAQ[index].id}`);
+                const content = document.getElementById(`solveria-faq-content-${index}`);
+                const button = faqItem.querySelector('.faq-button');
+                const icon = faqItem.querySelector('.faq-icon');
+                
+                // Close all other FAQ items
+                if (activeFAQIndex !== null && activeFAQIndex !== index) {
+                    closeSolveriaFAQ(activeFAQIndex);
+                }
+                
+                // Toggle current FAQ
+                if (activeFAQIndex === index) {
+                    closeSolveriaFAQ(index);
+                    activeFAQIndex = null;
+                } else {
+                    openSolveriaFAQ(index, faqItem, content, button, icon);
+                    activeFAQIndex = index;
+                }
+            };
+
+            function openSolveriaFAQ(index, faqItem, content, button, icon) {
+                faqItem.classList.add('active');
+                content.classList.add('active');
+                icon.classList.add('rotated');
+                button.setAttribute('aria-expanded', 'true');
+                
+                setTimeout(() => {
+                    faqItem.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'nearest' 
+                    });
+                }, 150);
+            }
+
+            function closeSolveriaFAQ(index) {
+                const faqItem = document.getElementById(`solveria-faq-${window.SolveriaFAQ[index].id}`);
+                const content = document.getElementById(`solveria-faq-content-${index}`);
+                const button = faqItem.querySelector('.faq-button');
+                const icon = faqItem.querySelector('.faq-icon');
+                
+                faqItem.classList.remove('active');
+                content.classList.remove('active');
+                icon.classList.remove('rotated');
+                button.setAttribute('aria-expanded', 'false');
+            }
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && activeFAQIndex !== null) {
+                    closeSolveriaFAQ(activeFAQIndex);
+                    activeFAQIndex = null;
+                }
+            });
+
+            // Auto-initialize when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initializeSolveriaFAQ);
+            } else {
+                initializeSolveriaFAQ();
+            }
+
+        })();
+        </script>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-text-dark text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- Logo and Description -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center">
+                            <i data-lucide="calculator" class="w-7 h-7 text-white"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold">Solveria</h3>
+                    </div>                    <p class="text-gray-400 mb-6 max-w-md text-lg leading-relaxed" data-translate="footer.description">
+                        AI destekli matematik çözüm platformu. Öğrencilerin matematik problemlerini anlayarak çözmelerine yardımcı oluyoruz.
+                    </p>
+                    <div class="flex space-x-4">
+                        <button class="w-12 h-12 bg-gray-800 hover:bg-primary rounded-xl flex items-center justify-center transition-colors">
+                            <i data-lucide="facebook" class="w-6 h-6"></i>
+                        </button>
+                        <button class="w-12 h-12 bg-gray-800 hover:bg-primary rounded-xl flex items-center justify-center transition-colors">
+                            <i data-lucide="twitter" class="w-6 h-6"></i>
+                        </button>
+                        <button class="w-12 h-12 bg-gray-800 hover:bg-primary rounded-xl flex items-center justify-center transition-colors">
+                            <i data-lucide="instagram" class="w-6 h-6"></i>
+                        </button>
+                        <button class="w-12 h-12 bg-gray-800 hover:bg-primary rounded-xl flex items-center justify-center transition-colors">
+                            <i data-lucide="youtube" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Links -->
+                <div>
+                    <h4 class="text-xl font-semibold mb-6" data-translate="footer.product">Ürün</h4>
+                    <div class="space-y-3">
+                        <a href="#how-it-works" class="block text-gray-400 hover:text-white transition-colors text-lg" data-translate="footer.howItWorks">Nasıl Çalışır</a>
+                        <a href="#features" class="block text-gray-400 hover:text-white transition-colors text-lg" data-translate="footer.features">Özellikler</a>
+                        <a href="#pricing" class="block text-gray-400 hover:text-white transition-colors text-lg" data-translate="footer.pricing">Fiyatlar</a>
+                    </div>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h4 class="text-xl font-semibold mb-6" data-translate="footer.company">Şirket</h4>
+                    <div class="space-y-3">
+                        <a href="#" class="block text-gray-400 hover:text-white transition-colors text-lg" data-translate="footer.about">Hakkımızda</a>
+                        <a href="#" class="block text-gray-400 hover:text-white transition-colors text-lg" data-translate="footer.contact">İletişim</a>
+                        <a href="#" class="block text-gray-400 hover:text-white transition-colors text-lg" data-translate="footer.privacy">Gizlilik Politikası</a>
+                        <a href="#" class="block text-gray-400 hover:text-white transition-colors text-lg" data-translate="footer.terms">Kullanım Şartları</a>
+                    </div>
+                </div>
+
+                <!-- Support -->
+                <div>
+                    <h4 class="text-xl font-semibold mb-6" data-translate="footer.support">Destek</h4>
+                    <div class="space-y-3">
+                        <a href="#" class="block text-gray-400 hover:text-white transition-colors text-lg" data-translate="footer.help">Yardım</a>
+                        <a href="#faq" class="block text-gray-400 hover:text-white transition-colors text-lg" data-translate="footer.faq">SSS</a>
+                        <a href="#" class="block text-gray-400 hover:text-white transition-colors text-lg" data-translate="footer.email">E-posta Desteği</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 mb-4 md:mb-0 text-lg" data-translate="footer.rights">
+                    © 2024 Solveria. Tüm hakları saklıdır.
+                </p>
+                <div class="flex items-center space-x-4 text-gray-400">
+                    <span class="text-lg">Made with ❤️ for students</span>
+                </div>
+            </div>
+        </div>
+    </footer>    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Add floating mathematical formulas for better visibility
+        function createFloatingFormulas() {
+            const formulas = [
+                '∫ f(x)dx',
+                'e^(iπ) + 1 = 0',
+                '∑ᵢ₌₁ⁿ i²',
+                '∂f/∂x',
+                'lim_{x→0} sin(x)/x',
+                '√(a² + b²)',
+                'π ≈ 3.14159',
+                '∇f',
+                'a² + b² = c²',
+                'x² + y² = r²',
+                '∞',
+                'θ',
+                'α',
+                'β',
+                'γ'
+            ];
+            
+            const container = document.body;
+            
+            formulas.forEach((formula, index) => {
+                const element = document.createElement('div');
+                element.className = 'math-float';
+                element.textContent = formula;
+                element.style.fontSize = Math.random() * 8 + 18 + 'px';
+                element.style.left = Math.random() * 95 + '%';
+                element.style.top = Math.random() * 90 + 5 + '%';
+                element.style.animationDelay = Math.random() * 15 + 's';
+                element.style.animationDuration = (Math.random() * 10 + 20) + 's';
+                element.style.position = 'fixed';
+                element.style.zIndex = '-10';
+                
+                container.appendChild(element);
+            });
+        }
+          // Initialize floating formulas after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            createFloatingFormulas();
+            initializeLanguageToggle();
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // FAQ accordion
+        const faqButtons = document.querySelectorAll('.faq-button');
+        
+        faqButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('i[data-lucide="chevron-down"]');
+                
+                // Close all other FAQ items
+                faqButtons.forEach(otherButton => {
+                    if (otherButton !== button) {
+                        const otherContent = otherButton.nextElementSibling;
+                        const otherIcon = otherButton.querySelector('i[data-lucide="chevron-down"]');
+                        if (otherContent && otherIcon) {
+                            otherContent.classList.add('hidden');
+                            otherIcon.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                });
+                
+                // Toggle current FAQ item
+                if (content && icon) {
+                    content.classList.toggle('hidden');
+                    icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+                }
+            });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });        // Language translations
+        const translations = {
+            tr: {
+                // Navigation                'nav.howItWorks': 'Nasıl Çalışır',
+                'nav.features': 'Özellikler',
+                'nav.pricing': 'Fiyatlar',
+                'nav.faq': 'SSS',
+                'nav.signup': 'Kayıt Ol',
+                'nav.startSolving': 'Çözmeye Başla',
+                
+                // Hero Section                'hero.title': 'AI Destekli Matematik Çözümleri',
+                'hero.titleHighlight': 'Anında',
+                'hero.subtitle': 'Matematik sorunuzu yükleyin ve adım adım cevaplar alın. 5-12. sınıf ve TYT/AYT için Türkçe & İngilizce desteği.',
+                'hero.signup': 'Kayıt Ol',
+                'hero.tryFree': 'Ücretsiz Dene',
+                'hero.watchDemo': 'Demo İzle',
+                'hero.freeTrial': 'İlk 3 soru tamamen ücretsiz!',
+                'hero.uploadTitle': 'Sorunuzu Yükleyin',
+                'hero.uploadSubtitle': 'Fotoğraf çekin veya galeriden seçin',
+                'hero.uploadButton': 'Fotoğraf Çek',
+                
+                // How It Works
+                'howItWorks.title': 'Nasıl Çalışır?',
+                'howItWorks.subtitle': 'Sadece 3 basit adımda matematik problemlerinizi çözün',
+                'howItWorks.step1.title': 'Fotoğraf Çek',
+                'howItWorks.step1.desc': 'Matematik sorunuzun fotoğrafını çekin veya galeriden yükleyin',
+                'howItWorks.step2.title': 'AI Analizi',
+                'howItWorks.step2.desc': 'Gelişmiş AI teknolojimiz sorunuzu anında analiz eder',
+                'howItWorks.step3.title': 'Çözüm Al',
+                'howItWorks.step3.desc': 'Detaylı adım adım çözüm ve açıklamalar alın',
+                
+                // Features
+                'features.title': 'Özellikler',
+                'features.subtitle': 'Matematik öğrenimini kolaylaştıran güçlü özellikler',
+                'features.ai.title': 'AI Destekli Çözüm',
+                'features.ai.desc': 'Gelişmiş yapay zeka teknolojisi ile anında ve doğru çözümler',
+                'features.stepByStep.title': 'Adım Adım Açıklama',
+                'features.stepByStep.desc': 'Her problemin detaylı çözüm adımları ve açıklamaları',
+                'features.multiLanguage.title': 'Çok Dilli Destek',
+                'features.multiLanguage.desc': 'Türkçe ve İngilizce tam destek ile öğrenin',
+                'features.allLevels.title': 'Tüm Seviyeler',
+                'features.allLevels.desc': '5-12. sınıf ve TYT/AYT için kapsamlı konu desteği',
+                'features.instant.title': 'Anında Sonuç',
+                'features.instant.desc': 'Saniyeler içinde probleminizin çözümüne ulaşın',
+                'features.saveProgress.title': 'İlerleme Takibi',
+                'features.saveProgress.desc': 'Çözdüğünüz problemleri kaydedin ve ilerlemenizi takip edin',
+                
+                // Pricing
+                'pricing.title': 'Fiyatlar',
+                'pricing.subtitle': 'İhtiyaçlarınıza uygun planı seçin',
+                'pricing.middle.title': 'Ortaokul',
+                'pricing.middle.subtitle': '5-8. sınıf öğrencileri için',
+                'pricing.middle.price': '₺49,90',
+                'pricing.middle.period': '/ay',
+                'pricing.middle.feature1': 'Sınırsız soru çözümü',
+                'pricing.middle.feature2': 'Adım adım açıklamalar',
+                'pricing.middle.feature3': 'Türkçe & İngilizce destek',
+                'pricing.middle.feature4': 'Temel matematik konuları',
+                'pricing.high.title': 'Lise',
+                'pricing.high.subtitle': '9-12. sınıf ve TYT/AYT',
+                'pricing.high.price': '₺69,90',
+                'pricing.high.period': '/ay',
+                'pricing.high.feature1': 'Sınırsız soru çözümü',
+                'pricing.high.feature2': 'Detaylı adım açıklamaları',
+                'pricing.high.feature3': 'Türkçe & İngilizce destek',
+                'pricing.high.feature4': 'Gelişmiş matematik konuları',
+                'pricing.high.feature5': 'TYT/AYT özel desteği',
+                'pricing.high.feature6': 'İlerleme takibi',
+                'pricing.popular': 'Popüler',
+                'pricing.selectPlan': 'Planı Seç',
+                
+                // FAQ
+                'faq.title': 'Sıkça Sorulan Sorular',
+                'faq.subtitle': 'Merak ettiğiniz her şey burada',
+                'faq.q1': 'Solveria nasıl çalışır?',
+                'faq.a1': 'Matematik probleminizin fotoğrafını çekmeniz yeterli. AI teknolojimiz sorunuzu analiz eder ve adım adım çözüm sunar.',
+                'faq.q2': 'Hangi matematik konularını destekliyorsunuz?',
+                'faq.a2': '5-12. sınıf matematik müfredatının tamamını ve TYT/AYT matematik sorularını destekliyoruz.',
+                'faq.q3': 'Ücretsiz deneme sürümü var mı?',
+                'faq.a3': 'Evet! İlk 3 sorunuzu tamamen ücretsiz çözebilirsiniz. Kredi kartı bilgisi gerektirmez.',
+                'faq.q4': 'Mobil uygulama mevcut mu?',
+                'faq.a4': 'Evet, iOS ve Android için mobil uygulamamız mevcuttur. App Store ve Google Play\'den indirebilirsiniz.',
+                'faq.q5': 'Hangi dillerde destek veriyorsunuz?',
+                'faq.a5': 'Şu anda Türkçe ve İngilizce tam destek veriyoruz. Yakında daha fazla dil eklenecek.',
+                
+                // Footer
+                'footer.product': 'Ürün',
+                'footer.howItWorks': 'Nasıl Çalışır',
+                'footer.features': 'Özellikler',
+                'footer.pricing': 'Fiyatlar',
+                'footer.company': 'Şirket',
+                'footer.about': 'Hakkımızda',
+                'footer.contact': 'İletişim',
+                'footer.privacy': 'Gizlilik Politikası',
+                'footer.terms': 'Kullanım Şartları',
+                'footer.support': 'Destek',
+                'footer.help': 'Yardım',
+                'footer.faq': 'SSS',
+                'footer.email': 'E-posta Desteği',
+                'footer.description': 'AI destekli matematik çözüm platformu. Öğrencilerin matematik problemlerini anlayarak çözmelerine yardımcı oluyoruz.',
+                'footer.rights': '© 2024 Solveria. Tüm hakları saklıdır.'
+            },
+            en: {
+                // Navigation                'nav.howItWorks': 'How It Works',
+                'nav.features': 'Features',
+                'nav.pricing': 'Pricing',
+                'nav.faq': 'FAQ',
+                'nav.signup': 'Sign Up',
+                'nav.startSolving': 'Start Solving',
+                
+                // Hero Section                'hero.title': 'AI-Powered Math Solutions',
+                'hero.titleHighlight': 'Instantly',
+                'hero.subtitle': 'Upload your math question and get step-by-step answers. Turkish & English supported for grades 5-12 and TYT/AYT.',
+                'hero.signup': 'Sign Up',
+                'hero.tryFree': 'Try for Free',
+                'hero.watchDemo': 'Watch Demo',
+                'hero.freeTrial': 'First 3 questions are completely free!',
+                'hero.uploadTitle': 'Upload Your Question',
+                'hero.uploadSubtitle': 'Take a photo or select from gallery',
+                'hero.uploadButton': 'Take Photo',
+                
+                // How It Works
+                'howItWorks.title': 'How It Works?',
+                'howItWorks.subtitle': 'Solve your math problems in just 3 simple steps',
+                'howItWorks.step1.title': 'Take Photo',
+                'howItWorks.step1.desc': 'Take a photo of your math problem or upload from gallery',
+                'howItWorks.step2.title': 'AI Analysis',
+                'howItWorks.step2.desc': 'Our advanced AI technology analyzes your problem instantly',
+                'howItWorks.step3.title': 'Get Solution',
+                'howItWorks.step3.desc': 'Receive detailed step-by-step solutions and explanations',
+                
+                // Features
+                'features.title': 'Features',
+                'features.subtitle': 'Powerful features that make math learning easier',
+                'features.ai.title': 'AI-Powered Solution',
+                'features.ai.desc': 'Instant and accurate solutions with advanced artificial intelligence',
+                'features.stepByStep.title': 'Step-by-Step Explanation',
+                'features.stepByStep.desc': 'Detailed solution steps and explanations for every problem',
+                'features.multiLanguage.title': 'Multi-Language Support',
+                'features.multiLanguage.desc': 'Learn with full Turkish and English support',
+                'features.allLevels.title': 'All Levels',
+                'features.allLevels.desc': 'Comprehensive topic support for grades 5-12 and TYT/AYT',
+                'features.instant.title': 'Instant Results',
+                'features.instant.desc': 'Get solutions to your problems within seconds',
+                'features.saveProgress.title': 'Progress Tracking',
+                'features.saveProgress.desc': 'Save solved problems and track your progress',
+                
+                // Pricing
+                'pricing.title': 'Pricing',
+                'pricing.subtitle': 'Choose the plan that fits your needs',
+                'pricing.middle.title': 'Middle School',
+                'pricing.middle.subtitle': 'For grades 5-8 students',
+                'pricing.middle.price': '₺49.90',
+                'pricing.middle.period': '/month',
+                'pricing.middle.feature1': 'Unlimited problem solving',
+                'pricing.middle.feature2': 'Step-by-step explanations',
+                'pricing.middle.feature3': 'Turkish & English support',
+                'pricing.middle.feature4': 'Basic mathematics topics',
+                'pricing.high.title': 'High School',
+                'pricing.high.subtitle': 'Grades 9-12 and TYT/AYT',
+                'pricing.high.price': '₺69.90',
+                'pricing.high.period': '/month',
+                'pricing.high.feature1': 'Unlimited problem solving',
+                'pricing.high.feature2': 'Detailed step explanations',
+                'pricing.high.feature3': 'Turkish & English support',
+                'pricing.high.feature4': 'Advanced mathematics topics',
+                'pricing.high.feature5': 'TYT/AYT special support',
+                'pricing.high.feature6': 'Progress tracking',
+                'pricing.popular': 'Popular',
+                'pricing.selectPlan': 'Select Plan',
+                
+                // FAQ
+                'faq.title': 'Frequently Asked Questions',
+                'faq.subtitle': 'Everything you need to know',
+                'faq.q1': 'How does Solveria work?',
+                'faq.a1': 'Simply take a photo of your math problem. Our AI technology analyzes your question and provides step-by-step solutions.',
+                'faq.q2': 'Which math topics do you support?',
+                'faq.a2': 'We support the complete mathematics curriculum for grades 5-12 and TYT/AYT math questions.',
+                'faq.q3': 'Is there a free trial?',
+                'faq.a3': 'Yes! You can solve your first 3 questions completely free. No credit card required.',
+                'faq.q4': 'Is there a mobile app available?',
+                'faq.a4': 'Yes, our mobile app is available for iOS and Android. You can download it from App Store and Google Play.',
+                'faq.q5': 'Which languages do you support?',
+                'faq.a5': 'We currently provide full support in Turkish and English. More languages will be added soon.',
+                
+                // Footer
+                'footer.product': 'Product',
+                'footer.howItWorks': 'How It Works',
+                'footer.features': 'Features',
+                'footer.pricing': 'Pricing',
+                'footer.company': 'Company',
+                'footer.about': 'About Us',
+                'footer.contact': 'Contact',
+                'footer.privacy': 'Privacy Policy',
+                'footer.terms': 'Terms of Service',
+                'footer.support': 'Support',
+                'footer.help': 'Help',
+                'footer.faq': 'FAQ',
+                'footer.email': 'Email Support',
+                'footer.description': 'AI-powered math solution platform. Helping students understand and solve math problems.',
+                'footer.rights': '© 2024 Solveria. All rights reserved.'
+            }
+        };
+
+        // Language toggle functionality
+        let currentLanguage = 'tr'; // Default language
+
+        function translatePage(language) {
+            currentLanguage = language;
+            const elements = document.querySelectorAll('[data-translate]');
+            
+            elements.forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[language] && translations[language][key]) {
+                    // Handle different element types
+                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.placeholder = translations[language][key];
+                    } else {
+                        element.textContent = translations[language][key];
+                    }
+                }
+            });
+            
+            // Update HTML lang attribute
+            document.documentElement.lang = language === 'tr' ? 'tr' : 'en';
+            
+            // Save language preference
+            localStorage.setItem('selectedLanguage', language);
+        }
+
+        // Initialize language toggle
+        function initializeLanguageToggle() {
+            const desktopToggle = document.getElementById('languageToggle');
+            const mobileToggle = document.getElementById('mobileLanguageToggle');
+            
+            // Check for saved language preference
+            const savedLanguage = localStorage.getItem('selectedLanguage') || 'tr';
+            currentLanguage = savedLanguage;
+            
+            // Set initial toggle values
+            if (desktopToggle) {
+                desktopToggle.value = savedLanguage;
+                desktopToggle.addEventListener('change', (e) => {
+                    const selectedLanguage = e.target.value;
+                    translatePage(selectedLanguage);
+                    // Sync mobile toggle
+                    if (mobileToggle) {
+                        mobileToggle.value = selectedLanguage;
+                    }
+                });
+            }
+            
+            if (mobileToggle) {
+                mobileToggle.value = savedLanguage;
+                mobileToggle.addEventListener('change', (e) => {
+                    const selectedLanguage = e.target.value;
+                    translatePage(selectedLanguage);
+                    // Sync desktop toggle
+                    if (desktopToggle) {
+                        desktopToggle.value = selectedLanguage;
+                    }
+                });
+            }
+            
+            // Apply initial translation
+            translatePage(savedLanguage);
+        }
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (header) {
+                if (window.scrollY > 100) {
+                    header.classList.add('bg-white');
+                    header.classList.remove('bg-white/95');
+                } else {
+                    header.classList.add('bg-white/95');
+                    header.classList.remove('bg-white');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

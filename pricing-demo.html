@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solveria - Pricing Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3A86FF',
+                        secondary: '#00B894',
+                        accent: '#FFE66D',
+                        background: '#F9FAFB',
+                        'text-dark': '#2D3436',
+                        'text-muted': '#6B7280'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(58, 134, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 184, 148, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 60% 40%, rgba(255, 230, 109, 0.03) 0%, transparent 50%),
+                linear-gradient(135deg, #F9FAFB 0%, #EBF4FF 25%, #E8F8F5 50%, #F3F7FF 75%, #F9FAFB 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-text-dark font-inter">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
+                        <i data-lucide="calculator" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold text-text-dark">Solveria</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="text-text-muted hover:text-primary transition-colors">Ana Sayfa</a>
+                    <a href="#pricing" class="text-primary font-semibold">Fiyatlandırma</a>
+                    <a href="#" class="text-text-muted hover:text-primary transition-colors">İletişim</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-5xl md:text-6xl font-bold text-text-dark mb-6">
+                Matematik Başarısı İçin
+                <span class="text-primary">Modern Çözümler</span>
+            </h1>
+            <p class="text-xl text-text-muted max-w-3xl mx-auto mb-8">
+                AI destekli matematik çözüm platformu ile her seviyede başarıya ulaşın. 
+                OCR teknolojisi ve akıllı çözüm algoritmaları ile matematik artık daha kolay.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="bg-primary text-white px-8 py-4 rounded-xl hover:bg-blue-600 transition-colors font-semibold">
+                    Ücretsiz Dene
+                </button>
+                <button class="border-2 border-primary text-primary px-8 py-4 rounded-xl hover:bg-primary hover:text-white transition-colors font-semibold">
+                    Demo İzle
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-20">
+        <!-- Include the enhanced pricing section content here -->
+        <iframe src="enhanced-pricing-section.html" 
+                width="100%" 
+                height="1200" 
+                frameborder="0" 
+                class="rounded-lg shadow-lg">
+        </iframe>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-text-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
+                            <i data-lucide="calculator" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">Solveria</h3>
+                    </div>
+                    <p class="text-gray-400">
+                        AI destekli matematik çözüm platformu
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Ürün</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Özellikler</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Fiyatlandırma</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">API</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Destek</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Yardım Merkezi</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">İletişim</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">SSS</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Yasal</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Gizlilik</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Şartlar</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Çerezler</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 Solveria. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

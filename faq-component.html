@@ -1,0 +1,513 @@
+<!-- 
+🎯 REUSABLE FAQ COMPONENT FOR SOLVERIA
+======================================
+Copy this section into any HTML file and it will work independently.
+All FAQ data is defined at the top for easy updates.
+-->
+
+<section id="faq-component" class="py-16">
+<script>
+// 📝 FAQ DATA - UPDATE HERE TO ADD/MODIFY QUESTIONS
+// =================================================
+
+window.SolveriaFAQComponent = {
+    // Section configuration
+    config: {
+        title: "Sık Sorulan Sorular",
+        subtitle: "Solveria hakkında merak ettiğiniz her şey burada. Daha fazla sorunuz varsa bizimle iletişime geçin.",
+        showContactCTA: true,
+        allowMultipleOpen: false, // Set to true to allow multiple FAQs open at once
+        showIcons: true
+    },
+    
+    // FAQ questions and answers
+    faqs: [
+        {
+            id: 'how-it-works',
+            question: 'Solveria nasıl çalışır?',
+            answer: 'Kullanıcılar bir matematik sorusunun fotoğrafını yükler. Sistem OCR ile bu görüntüyü metne çevirir. Kullanıcı metni düzenledikten sonra Solveria, AI destekli adım adım çözüm sunar.',
+            icon: 'zap',
+            category: 'genel'
+        },
+        {
+            id: 'supported-topics',
+            question: 'Hangi matematik konularını destekliyorsunuz?',
+            answer: 'Solveria, 5. sınıftan 12. sınıfa kadar MEB müfredatını kapsar. Ayrıca TYT ve AYT\'ye özel soru çözüm desteği sunar.',
+            icon: 'book-open',
+            category: 'teknik'
+        },
+        {
+            id: 'free-trial',
+            question: 'Ücretsiz deneme sürümü var mı?',
+            answer: 'Evet. Kayıt olmadan veya ödeme yapmadan 3 soruyu tamamen ücretsiz çözebilirsin.',
+            icon: 'gift',
+            category: 'fiyatlandırma'
+        },
+        {
+            id: 'mobile-app',
+            question: 'Mobil uygulama mevcut mu?',
+            answer: 'Solveria, tüm mobil tarayıcılarda çalışır. Yakında iOS ve Android sürümleri de yayınlanacak.',
+            icon: 'smartphone',
+            category: 'teknik'
+        },
+        {
+            id: 'language-support',
+            question: 'Hangi dillerde destek veriyorsunuz?',
+            answer: 'Şu anda Türkçe ve İngilizce matematik sorularında OCR ve AI destekli çözüm sunuyoruz.',
+            icon: 'globe',
+            category: 'teknik'
+        }
+    ],
+    
+    // Contact CTA configuration
+    contactCTA: {
+        title: "Başka sorunuz mu var?",
+        subtitle: "Bulamadığınız bir cevap varsa, uzman ekibimiz size yardımcı olmaktan memnuniyet duyar.",
+        buttons: [
+            {
+                text: "Email Gönder",
+                icon: "mail",
+                style: "primary",
+                action: "mailto:destek@solveria.com"
+            },
+            {
+                text: "Bizi Arayın",
+                icon: "phone",
+                style: "secondary",
+                action: "tel:+905001234567"
+            }
+        ]
+    }
+};
+</script>
+
+<style>
+/* FAQ Component Styles */
+#faq-component .faq-bg {
+    background: linear-gradient(160deg, 
+        rgba(249, 250, 251, 0.98) 0%, 
+        rgba(235, 244, 255, 0.85) 40%, 
+        rgba(232, 248, 245, 0.9) 100%
+    );
+}
+
+#faq-component .faq-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+#faq-component .faq-content.active {
+    max-height: 500px;
+    transition: max-height 0.3s ease-in;
+}
+
+#faq-component .faq-icon {
+    transition: transform 0.3s ease;
+}
+
+#faq-component .faq-icon.rotated {
+    transform: rotate(180deg);
+}
+
+#faq-component .faq-item {
+    transition: all 0.2s ease;
+}
+
+#faq-component .faq-item:hover {
+    transform: translateY(-2px);
+}
+
+#faq-component .faq-item.active {
+    box-shadow: 0 10px 25px -5px rgba(58, 134, 255, 0.1), 0 4px 6px -2px rgba(58, 134, 255, 0.05);
+}
+
+#faq-component .fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<div class="faq-bg">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <!-- Section Header -->
+        <div id="faq-header" class="text-center mb-16">
+            <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- FAQ Search (Optional) -->
+        <div id="faq-search" class="mb-8 hidden">
+            <!-- Will be populated if search is enabled -->
+        </div>
+
+        <!-- FAQ Accordion -->
+        <div class="space-y-4" id="faq-accordion">
+            <!-- FAQ items will be dynamically generated here -->
+        </div>
+
+        <!-- Contact CTA -->
+        <div id="faq-contact-cta" class="text-center mt-12">
+            <!-- Will be populated by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<script>
+// 🚀 FAQ COMPONENT FUNCTIONALITY
+// ==============================
+
+(function() {
+    'use strict';
+    
+    let activeIndices = [];
+    
+    function initFAQComponent() {
+        if (!window.SolveriaFAQComponent) {
+            console.error('SolveriaFAQComponent data not found');
+            return;
+        }
+        
+        generateHeader();
+        generateFAQItems();
+        generateContactCTA();
+        
+        // Initialize icons if Lucide is available
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+    
+    function generateHeader() {
+        const config = window.SolveriaFAQComponent.config;
+        const headerEl = document.getElementById('faq-header');
+        
+        headerEl.innerHTML = `
+            <div class="flex items-center justify-center space-x-3 mb-6">
+                <div class="w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-xl flex items-center justify-center">
+                    <i data-lucide="help-circle" class="w-7 h-7 text-white"></i>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold text-text-dark">${config.title}</h2>
+            </div>
+            <p class="text-xl text-text-muted max-w-2xl mx-auto leading-relaxed">
+                ${config.subtitle}
+            </p>
+        `;
+    }
+    
+    function generateFAQItems() {
+        const container = document.getElementById('faq-accordion');
+        container.innerHTML = '';
+        
+        window.SolveriaFAQComponent.faqs.forEach((faq, index) => {
+            const faqHTML = createFAQItem(faq, index);
+            container.insertAdjacentHTML('beforeend', faqHTML);
+        });
+    }
+    
+    function createFAQItem(faq, index) {
+        const config = window.SolveriaFAQComponent.config;
+        const iconHTML = config.showIcons ? `
+            <div class="w-10 h-10 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i data-lucide="${faq.icon}" class="w-5 h-5 text-primary"></i>
+            </div>
+        ` : '';
+        
+        return `
+            <div class="faq-item bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden fade-in" 
+                 id="faq-item-${index}" style="animation-delay: ${index * 0.1}s">
+                <button 
+                    class="w-full px-6 sm:px-8 py-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors faq-button group"
+                    onclick="window.toggleFAQComponent(${index})"
+                    aria-expanded="false"
+                    aria-controls="faq-content-${index}"
+                >
+                    <div class="flex items-center space-x-4 flex-1 min-w-0">
+                        ${iconHTML}
+                        <span class="text-lg font-semibold text-text-dark pr-4 group-hover:text-primary transition-colors">
+                            ${faq.question}
+                        </span>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <i data-lucide="chevron-down" class="w-6 h-6 text-text-muted faq-icon transition-transform"></i>
+                    </div>
+                </button>
+                <div 
+                    class="faq-content" 
+                    id="faq-content-${index}"
+                    aria-labelledby="faq-button-${index}"
+                >
+                    <div class="px-6 sm:px-8 pb-6">
+                        <div class="flex items-start space-x-4">
+                            ${config.showIcons ? '<div class="w-10 h-10 flex-shrink-0"></div>' : ''}
+                            <div class="flex-1">
+                                <p class="text-text-muted leading-relaxed text-lg">
+                                    ${faq.answer}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    function generateContactCTA() {
+        const config = window.SolveriaFAQComponent.config;
+        const cta = window.SolveriaFAQComponent.contactCTA;
+        const ctaEl = document.getElementById('faq-contact-cta');
+        
+        if (!config.showContactCTA) {
+            ctaEl.style.display = 'none';
+            return;
+        }
+        
+        const buttonsHTML = cta.buttons.map(button => {
+            const buttonClasses = button.style === 'primary' 
+                ? 'bg-primary text-white hover:bg-blue-600' 
+                : 'border-2 border-secondary text-secondary hover:bg-secondary hover:text-white';
+                
+            return `
+                <button class="${buttonClasses} px-6 py-3 rounded-xl transition-colors flex items-center justify-center font-semibold"
+                        onclick="handleCTAAction('${button.action}')">
+                    <i data-lucide="${button.icon}" class="w-5 h-5 mr-2"></i>
+                    ${button.text}
+                </button>
+            `;
+        }).join('');
+        
+        ctaEl.innerHTML = `
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+                <div class="flex items-center justify-center space-x-3 mb-4">
+                    <i data-lucide="message-circle" class="w-8 h-8 text-primary"></i>
+                    <h3 class="text-2xl font-semibold text-text-dark">${cta.title}</h3>
+                </div>
+                <p class="text-text-muted mb-6 text-lg">
+                    ${cta.subtitle}
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    ${buttonsHTML}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Toggle FAQ function
+    window.toggleFAQComponent = function(index) {
+        const config = window.SolveriaFAQComponent.config;
+        const faqItem = document.getElementById(`faq-item-${index}`);
+        const content = document.getElementById(`faq-content-${index}`);
+        const button = faqItem.querySelector('.faq-button');
+        const icon = faqItem.querySelector('.faq-icon');
+        
+        const isActive = activeIndices.includes(index);
+        
+        // If not allowing multiple open, close all others
+        if (!config.allowMultipleOpen && !isActive) {
+            closeAllFAQs();
+        }
+        
+        if (isActive) {
+            closeFAQItem(index, faqItem, content, button, icon);
+        } else {
+            openFAQItem(index, faqItem, content, button, icon);
+        }
+    };
+    
+    function openFAQItem(index, faqItem, content, button, icon) {
+        faqItem.classList.add('active');
+        content.classList.add('active');
+        icon.classList.add('rotated');
+        button.setAttribute('aria-expanded', 'true');
+        
+        activeIndices.push(index);
+        
+        // Smooth scroll
+        setTimeout(() => {
+            faqItem.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'nearest' 
+            });
+        }, 150);
+        
+        // Analytics
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'faq_opened', {
+                question: window.SolveriaFAQComponent.faqs[index].question,
+                question_id: window.SolveriaFAQComponent.faqs[index].id
+            });
+        }
+    }
+    
+    function closeFAQItem(index, faqItem, content, button, icon) {
+        faqItem.classList.remove('active');
+        content.classList.remove('active');
+        icon.classList.remove('rotated');
+        button.setAttribute('aria-expanded', 'false');
+        
+        activeIndices = activeIndices.filter(i => i !== index);
+    }
+    
+    function closeAllFAQs() {
+        activeIndices.forEach(index => {
+            const faqItem = document.getElementById(`faq-item-${index}`);
+            const content = document.getElementById(`faq-content-${index}`);
+            const button = faqItem.querySelector('.faq-button');
+            const icon = faqItem.querySelector('.faq-icon');
+            
+            closeFAQItem(index, faqItem, content, button, icon);
+        });
+        activeIndices = [];
+    }
+    
+    // Handle CTA button actions
+    window.handleCTAAction = function(action) {
+        if (action.startsWith('mailto:') || action.startsWith('tel:')) {
+            window.location.href = action;
+        } else if (action.startsWith('http')) {
+            window.open(action, '_blank');
+        } else {
+            // Custom action - you can implement your own logic
+            console.log('Custom CTA action:', action);
+        }
+    };
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAllFAQs();
+        }
+    });
+    
+    // Search functionality (optional)
+    window.enableFAQSearch = function() {
+        const searchContainer = document.getElementById('faq-search');
+        searchContainer.classList.remove('hidden');
+        searchContainer.innerHTML = `
+            <div class="relative max-w-md mx-auto">
+                <input 
+                    type="text" 
+                    placeholder="FAQ'da ara..." 
+                    class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    oninput="searchFAQComponent(this.value)"
+                >
+                <i data-lucide="search" class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+            </div>
+        `;
+        
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    };
+    
+    window.searchFAQComponent = function(searchTerm) {
+        const items = document.querySelectorAll('#faq-component .faq-item');
+        const term = searchTerm.toLowerCase();
+        
+        items.forEach((item, index) => {
+            const faq = window.SolveriaFAQComponent.faqs[index];
+            const question = faq.question.toLowerCase();
+            const answer = faq.answer.toLowerCase();
+            
+            if (question.includes(term) || answer.includes(term)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    };
+    
+    // Public API
+    window.FAQComponent = {
+        open: function(index) {
+            if (index >= 0 && index < window.SolveriaFAQComponent.faqs.length) {
+                window.toggleFAQComponent(index);
+            }
+        },
+        close: closeAllFAQs,
+        search: window.searchFAQComponent,
+        addFAQ: function(newFAQ) {
+            window.SolveriaFAQComponent.faqs.push(newFAQ);
+            generateFAQItems();
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+    };
+    
+    // Auto-initialize
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFAQComponent);
+    } else {
+        initFAQComponent();
+    }
+    
+})();
+</script>
+</section>
+
+<!-- 
+📚 USAGE INSTRUCTIONS:
+======================
+
+1. BASIC INTEGRATION:
+   - Copy this entire section to your HTML
+   - Ensure Tailwind CSS and Lucide icons are loaded
+   - The component is fully self-contained
+
+2. CUSTOMIZATION:
+   - Edit window.SolveriaFAQComponent object at the top
+   - Change colors by modifying Tailwind classes
+   - Add/remove FAQs in the faqs array
+
+3. FEATURES:
+   - Smooth accordion animations
+   - Icons for each question
+   - Contact CTA section
+   - Keyboard navigation (ESC to close)
+   - Analytics tracking ready
+   - Optional search functionality
+
+4. API USAGE:
+   // Enable search
+   window.enableFAQSearch();
+   
+   // Open specific FAQ
+   window.FAQComponent.open(0);
+   
+   // Close all FAQs
+   window.FAQComponent.close();
+   
+   // Add new FAQ
+   window.FAQComponent.addFAQ({
+       id: 'new-question',
+       question: 'Your question?',
+       answer: 'Your answer.',
+       icon: 'help-circle',
+       category: 'general'
+   });
+
+5. CONFIGURATION OPTIONS:
+   - allowMultipleOpen: true/false
+   - showIcons: true/false  
+   - showContactCTA: true/false
+   - Custom contact buttons
+
+EXAMPLE CUSTOMIZATION:
+=====================
+
+// Change to allow multiple open FAQs
+window.SolveriaFAQComponent.config.allowMultipleOpen = true;
+
+// Add new FAQ
+window.SolveriaFAQComponent.faqs.push({
+    id: 'pricing',
+    question: 'Fiyatlar nasıl belirlenir?',
+    answer: 'Fiyatlarımız kullanım miktarına göre belirlenir.',
+    icon: 'dollar-sign',
+    category: 'fiyatlandırma'
+});
+-->

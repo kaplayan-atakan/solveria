@@ -22,7 +22,7 @@ app.use(helmet({
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
         ? ['https://yourdomain.com', 'https://www.yourdomain.com'] 
-        : ['http://localhost:3000', 'http://127.0.0.1:3000'],
+        : ['http://localhost:3000', 'http://localhost:8080', 'http://127.0.0.1:3000', 'http://127.0.0.1:8080'],
     credentials: true
 }));
 
@@ -36,12 +36,13 @@ app.use(express.static(path.join(__dirname)));
 // Database connection
 const connectDB = async () => {
     try {
-        const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/solveria';
+        const mongoURI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/solveria';
         await mongoose.connect(mongoURI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
         console.log('✅ MongoDB connected successfully');
+        console.log(`📊 Connected to: ${mongoURI.replace(/\/\/.*@/, '//***:***@')}`);
     } catch (error) {
         console.error('❌ MongoDB connection error:', error);
         // Don't exit in development, just warn
