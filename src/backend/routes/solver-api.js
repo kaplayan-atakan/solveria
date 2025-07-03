@@ -5,10 +5,15 @@ const { generateFinalPrompt } = require('../../shared/utils/math-prompt-template
 
 const router = express.Router();
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY, // Set your API key in environment variables
-});
+// Initialize OpenAI client (optional for development)
+let openai = null;
+if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your_openai_api_key_here') {
+    openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+    });
+} else {
+    console.warn('⚠️  OpenAI API key not configured. AI features will be disabled.');
+}
 
 // Rate limiting for AI requests
 const aiRateLimit = rateLimit({
@@ -133,6 +138,20 @@ router.post('/api/solve', aiRateLimit, async (req, res) => {
         const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
         try {
+            // Check if OpenAI is available
+            if (!openai) {
+                return res.status(503).json({
+                    success: false,
+                    message: 'AI service is not available. Please configure OPENAI_API_KEY.',
+                    solution: {
+                        steps: ['Demo step: This is a placeholder solution.'],
+                        explanation: 'AI service is not configured. This is a demo response.',
+                        finalAnswer: 'Demo answer',
+                        confidence: 0
+                    }
+                });
+            }
+
             const completion = await openai.chat.completions.create({
                 model: "gpt-4", // or "gpt-3.5-turbo" for faster/cheaper responses
                 messages: [
